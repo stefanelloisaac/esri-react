@@ -1,62 +1,57 @@
 "use client";
 
-import { useEffect, useRef, useMemo, useCallback } from "react";
-import L from "leaflet";
-import "esri-leaflet";
-import * as ELV from "esri-leaflet-vector";
+import { useRef, useMemo } from "react";
 import { BRAZIL_BOUNDS, MAP_CONFIG, BASEMAP_STYLE } from "./Map.config";
 import { getMapOptions, getBasemapOptions } from "./Map.options";
 import type { MapProps } from "./Map.types";
+import { useLeafletMap } from "@/hooks/use-leaflet-map";
+import { useMapView } from "@/hooks/use-map-view";
+import { useMapDraw } from "@/hooks/use-map-draw";
+import { useCallbacksRef } from "@/hooks/use-stable-callback";
+import "leaflet-draw/dist/leaflet.draw.css";
 
 export default function Map({
   height = "500px",
   center = MAP_CONFIG.DEFAULT_CENTER,
   zoom = MAP_CONFIG.DEFAULT_ZOOM,
   className = "",
+  onShapeCreated,
+  onShapeEdited,
+  onShapeDeleted,
 }: MapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const isInitializedRef = useRef(false);
 
   const mapOptions = useMemo(() => getMapOptions(), []);
-
   const basemapOptions = useMemo(
     () => getBasemapOptions(process.env.NEXT_PUBLIC_ARCGIS_API_KEY),
     []
   );
+  const leafletMapOptions = useMemo(
+    () => ({
+      mapOptions,
+      basemapStyle: BASEMAP_STYLE,
+      basemapOptions,
+      initialCenter: center,
+      initialZoom: zoom,
+      bounds: BRAZIL_BOUNDS,
+    }),
+    [mapOptions, basemapOptions, center, zoom]
+  );
 
-  const handleDrag = useCallback(() => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.panInsideBounds(BRAZIL_BOUNDS, { animate: false });
-    }
-  }, []);
+  const callbacksRef = useCallbacksRef({
+    onShapeCreated,
+    onShapeEdited,
+    onShapeDeleted,
+  });
 
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
+  const { mapRef, isInitializedRef } = useLeafletMap(
+    mapContainerRef,
+    leafletMapOptions
+  );
 
-    if (!isInitializedRef.current) {
-      const map = L.map(mapContainerRef.current, mapOptions).setView(
-        center,
-        zoom
-      );
-      mapInstanceRef.current = map;
-      isInitializedRef.current = true;
+  useMapView(mapRef, isInitializedRef, center, zoom);
 
-      ELV.vectorBasemapLayer(BASEMAP_STYLE, basemapOptions).addTo(map);
-      map.on("drag", handleDrag);
-
-      return () => {
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.off("drag", handleDrag);
-          mapInstanceRef.current.remove();
-          mapInstanceRef.current = null;
-          isInitializedRef.current = false;
-        }
-      };
-    } else if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView(center, zoom, { animate: true });
-    }
-  }, [center, zoom, mapOptions, basemapOptions, handleDrag]);
+  useMapDraw(mapRef, isInitializedRef, callbacksRef);
 
   const containerStyle = useMemo(() => ({ height, width: "100%" }), [height]);
 

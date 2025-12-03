@@ -13,6 +13,4 @@ export const MAP_CONFIG = {
   MAX_BOUNDS_VISCOSITY: 1.0,
 } as const;
 
-// Basemap style enumeration (v2 format: provider/style-name)
-// See: https://developers.arcgis.com/rest/basemap-styles/
 export const BASEMAP_STYLE = "arcgis/imagery" as const;
