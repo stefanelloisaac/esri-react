@@ -41,7 +41,7 @@ export class BoundaryManager {
 
     if (animate) {
       this.map.flyTo(boundary.center, boundary.defaultZoom, {
-        duration: 1.2,
+        duration: 1,
         easeLinearity: 0.5,
       });
 
@@ -50,7 +50,7 @@ export class BoundaryManager {
 
         this.attachBoundaryEnforcement(boundary.bounds);
         this.setupTileLoadListener();
-      }, 1300);
+      }, 1100);
     } else {
       this.map.setView(boundary.center, boundary.defaultZoom, {
         animate: false,
@@ -78,7 +78,7 @@ export class BoundaryManager {
       if (this.isMapValid()) {
         this.options.onTilesLoaded?.();
       }
-    }, 500);
+    }, 100);
   }
 
   private attachBoundaryEnforcement(bounds: L.LatLngBoundsExpression): void {
