@@ -8,9 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getBoundaryNames } from "./boundaries";
+import { getBoundaryNames } from "../_lib/_boundaries";
 import { cn } from "@/lib/utils";
-import type { BoundarySelectorProps } from "./types";
+import type { BoundarySelectorProps } from "../_types";
 
 export function BoundarySelector({
   value,

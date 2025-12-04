@@ -39,6 +39,7 @@ export interface MapProps extends DrawControlOptions {
   zoom?: number;
   className?: string;
   allowedBoundaries?: string[];
+  onDrawingsExport?: (geoJSON: GeoJSON.FeatureCollection) => void;
 }
 
 export interface BoundarySelectorProps {

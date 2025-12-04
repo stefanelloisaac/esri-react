@@ -2,7 +2,7 @@ import { useRef, useLayoutEffect } from "react";
 import L from "leaflet";
 import "esri-leaflet";
 import * as ELV from "esri-leaflet-vector";
-import type { UseLeafletMapOptions } from "../types";
+import type { UseLeafletMapOptions } from "../_types";
 
 export function useLeafletMap(
   containerRef: React.RefObject<HTMLDivElement | null>,

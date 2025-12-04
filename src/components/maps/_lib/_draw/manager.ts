@@ -1,12 +1,13 @@
 import L from "leaflet";
 import "leaflet-draw";
-import type { DrawControlOptions } from "../types";
+import type { DrawControlOptions } from "../../_types";
 import {
   createPolygonPopup,
   createCirclePopup,
   createMarkerPopup,
   createPointRow,
 } from "./templates";
+import { DEFAULT_DRAW_COLOR, getShapeOptions, type DrawColor } from "./colors";
 
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })
   ._getIconUrl;
@@ -129,29 +130,53 @@ export class MapDrawManager {
   private drawnItems: L.FeatureGroup;
   private drawControl: L.Control.Draw;
   private options: DrawControlOptions;
+  private currentColor: DrawColor;
 
   constructor(map: L.Map, options: DrawControlOptions = {}) {
     this.map = map;
     this.options = options;
     this.drawnItems = new L.FeatureGroup();
+    this.currentColor = DEFAULT_DRAW_COLOR;
     this.drawControl = this.createDrawControl();
     this.initialize();
   }
 
   private createDrawControl(): L.Control.Draw {
+    const shapeOptions = getShapeOptions(this.currentColor);
+
     return new L.Control.Draw({
+      position: "topleft",
       edit: {
         featureGroup: this.drawnItems,
       },
       draw: {
-        polygon: {},
+        polygon: { shapeOptions },
         polyline: false,
-        rectangle: {},
-        circle: {},
+        rectangle: { shapeOptions },
+        circle: { shapeOptions },
         marker: {},
         circlemarker: false,
       },
     });
+  }
+
+  public setDrawColor(color: DrawColor): void {
+    this.currentColor = color;
+    try {
+      this.map.removeControl(this.drawControl);
+    } catch (e) {
+      console.warn("Error removing draw control:", e);
+    }
+    this.drawControl = this.createDrawControl();
+    try {
+      this.map.addControl(this.drawControl);
+    } catch (e) {
+      console.error("Error adding draw control:", e);
+    }
+  }
+
+  public getCurrentColor(): DrawColor {
+    return this.currentColor;
   }
 
   private initialize(): void {
@@ -164,16 +189,31 @@ export class MapDrawManager {
     this.map.on(L.Draw.Event.CREATED, (event: L.LeafletEvent) => {
       const drawEvent = event as L.DrawEvents.Created;
       const layer = drawEvent.layer;
-      this.drawnItems.addLayer(layer);
+      const geoJSONLayer = layer as L.Layer & {
+        feature?: GeoJSON.Feature;
+        toGeoJSON: () => GeoJSON.Feature;
+      };
 
+      if (!geoJSONLayer.feature) {
+        geoJSONLayer.feature = {
+          type: "Feature",
+          properties: {},
+          geometry: geoJSONLayer.toGeoJSON().geometry,
+        };
+      }
+      if (!geoJSONLayer.feature.properties) {
+        geoJSONLayer.feature.properties = {};
+      }
+      geoJSONLayer.feature.properties.drawColor = this.currentColor;
+
+      this.applyColorToLayer(layer, this.currentColor);
+
+      this.drawnItems.addLayer(layer);
       this.bindPopupToLayer(layer, drawEvent.layerType);
 
       if (this.options.onShapeCreated) {
-        this.options.onShapeCreated(
-          drawEvent.layerType,
-          layer,
-          layer.toGeoJSON() as GeoJSON.Feature
-        );
+        const geoJSON = geoJSONLayer.toGeoJSON() as GeoJSON.Feature;
+        this.options.onShapeCreated(drawEvent.layerType, layer, geoJSON);
       }
     });
 
@@ -225,9 +265,35 @@ export class MapDrawManager {
     this.clearAll();
     L.geoJSON(geoJSON, {
       onEachFeature: (feature, layer) => {
+        const geoJSONLayer = layer as L.Layer & { feature?: GeoJSON.Feature };
+        geoJSONLayer.feature = feature;
+
+        if (feature.properties?.drawColor) {
+          this.applyColorToLayer(layer, feature.properties.drawColor);
+        }
         this.drawnItems.addLayer(layer);
       },
     });
+  }
+
+  private applyColorToLayer(layer: L.Layer, color: DrawColor): void {
+    const shapeOptions = getShapeOptions(color);
+
+    if (layer instanceof L.Circle || layer instanceof L.CircleMarker) {
+      layer.setStyle({
+        color: shapeOptions.color,
+        fillColor: shapeOptions.fillColor,
+        fillOpacity: shapeOptions.fillOpacity,
+        weight: shapeOptions.weight,
+      });
+    } else if (layer instanceof L.Polyline || layer instanceof L.Polygon) {
+      layer.setStyle({
+        color: shapeOptions.color,
+        fillColor: shapeOptions.fillColor,
+        fillOpacity: shapeOptions.fillOpacity,
+        weight: shapeOptions.weight,
+      });
+    }
   }
 
   private getLayerType(layer: L.Layer): string {

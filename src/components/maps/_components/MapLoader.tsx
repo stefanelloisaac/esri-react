@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import type { MapLoaderProps } from "./types";
+import type { MapLoaderProps } from "../_types";
 
 export function MapLoader({
   isLoading,

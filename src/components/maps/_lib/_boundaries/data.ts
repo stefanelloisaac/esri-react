@@ -1,4 +1,4 @@
-import type { BoundaryDefinition } from "../types";
+import type { BoundaryDefinition } from "../../_types";
 
 export const BOUNDARIES: Record<string, BoundaryDefinition> = {
   ac: {

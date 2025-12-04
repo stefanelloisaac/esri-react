@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import type L from "leaflet";
 import { MapDrawManager } from "./manager";
-import type { DrawControlOptions } from "../types";
+import type { DrawControlOptions } from "../../_types";
 
 export function useMapDraw(
   mapRef: React.RefObject<L.Map | null>,
@@ -64,5 +64,5 @@ export function useMapDraw(
     };
   }, [mapRef, isInitializedRef, callbacksRef]);
 
-  return drawManagerRef;
+  return { drawManagerRef };
 }

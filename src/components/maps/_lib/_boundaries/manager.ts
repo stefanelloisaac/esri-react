@@ -1,5 +1,5 @@
 import L from "leaflet";
-import type { BoundaryDefinition, BoundaryManagerOptions } from "../types";
+import type { BoundaryDefinition, BoundaryManagerOptions } from "../../_types";
 
 export class BoundaryManager {
   private map: L.Map;
