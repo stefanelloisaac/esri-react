@@ -2,6 +2,122 @@ import L from "leaflet";
 import "leaflet-draw";
 import type { DrawControlOptions } from "../types";
 
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })
+  ._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+(L as unknown as { drawLocal: typeof L.drawLocal }).drawLocal = {
+  draw: {
+    toolbar: {
+      actions: {
+        title: "Cancelar desenho",
+        text: "Cancelar",
+      },
+      finish: {
+        title: "Finalizar desenho",
+        text: "Finalizar",
+      },
+      undo: {
+        title: "Apagar último ponto desenhado",
+        text: "Apagar último ponto",
+      },
+      buttons: {
+        polyline: "Desenhar uma polilinha",
+        polygon: "Desenhar um polígono",
+        rectangle: "Desenhar um retângulo",
+        circle: "Desenhar um círculo",
+        marker: "Adicionar um marcador",
+        circlemarker: "Desenhar um marcador circular",
+      },
+    },
+    handlers: {
+      circle: {
+        tooltip: {
+          start: "Clique e arraste para desenhar um círculo.",
+        },
+        radius: "Raio",
+      },
+      circlemarker: {
+        tooltip: {
+          start: "Clique no mapa para posicionar o marcador circular.",
+        },
+      },
+      marker: {
+        tooltip: {
+          start: "Clique no mapa para posicionar o marcador.",
+        },
+      },
+      polygon: {
+        tooltip: {
+          start: "Clique para começar a desenhar.",
+          cont: "Clique para continuar desenhando.",
+          end: "Clique no primeiro ponto para fechar o polígono.",
+        },
+      },
+      polyline: {
+        error: "<strong>Erro:</strong> as bordas não podem se cruzar!",
+        tooltip: {
+          start: "Clique para começar a desenhar.",
+          cont: "Clique para continuar desenhando.",
+          end: "Clique no último ponto para finalizar.",
+        },
+      },
+      rectangle: {
+        tooltip: {
+          start: "Clique e arraste para desenhar um retângulo.",
+        },
+      },
+      simpleshape: {
+        tooltip: {
+          end: "Solte o mouse para finalizar.",
+        },
+      },
+    },
+  },
+  edit: {
+    toolbar: {
+      actions: {
+        save: {
+          title: "Salvar alterações",
+          text: "Salvar",
+        },
+        cancel: {
+          title: "Cancelar edição, descarta todas as alterações",
+          text: "Cancelar",
+        },
+        clearAll: {
+          title: "Limpar todas as camadas",
+          text: "Limpar tudo",
+        },
+      },
+      buttons: {
+        edit: "Editar camadas",
+        editDisabled: "Nenhuma camada para editar",
+        remove: "Excluir camadas",
+        removeDisabled: "Nenhuma camada para excluir",
+      },
+    },
+    handlers: {
+      edit: {
+        tooltip: {
+          text: "Arraste os pontos ou marcadores para editar.",
+          subtext: "Clique em cancelar para desfazer as alterações.",
+        },
+      },
+      remove: {
+        tooltip: {
+          text: "Clique em um elemento para remover.",
+        },
+      },
+    },
+  },
+};
+
 export class MapDrawManager {
   private map: L.Map;
   private drawnItems: L.FeatureGroup;
@@ -23,11 +139,11 @@ export class MapDrawManager {
       },
       draw: {
         polygon: {},
-        polyline: {},
+        polyline: false,
         rectangle: {},
         circle: {},
         marker: {},
-        circlemarker: {},
+        circlemarker: false,
       },
     });
   }
