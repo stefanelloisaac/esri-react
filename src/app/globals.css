@@ -121,3 +121,38 @@
     @apply bg-background text-foreground;
   }
 }
+
+.dark .leaflet-control-zoom {
+  background-color: color-mix(in oklch, var(--background) 60%, transparent);
+}
+
+.dark .leaflet-control-zoom a {
+  filter: invert(1);
+}
+
+.dark .leaflet-draw-section {
+  background-color: color-mix(in oklch, var(--background) 60%, transparent);
+}
+
+.dark .leaflet-draw-actions a {
+  background-color: color-mix(in oklch, var(--background) 60%, transparent);
+}
+
+.dark .leaflet-draw-toolbar a {
+  filter: invert(1);
+}
+
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.dark .leaflet-popup-content-wrapper {
+  border: 1px solid color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.dark .leaflet-control-attribution {
+  background-color: color-mix(in oklch, var(--background) 60%, transparent);
+  color: var(--foreground);
+}

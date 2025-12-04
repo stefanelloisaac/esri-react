@@ -8,6 +8,7 @@ import { useBoundaryManager, getBoundaryById } from "./boundaries";
 import { useMapDraw } from "./draw";
 import { useCallbacksRef } from "@/hooks/use-stable-callback";
 import { BoundarySelector } from "./BoundarySelector";
+import { SearchInput } from "./SearchInput";
 import { MapLoader } from "./MapLoader";
 import type { MapProps } from "./types";
 import "leaflet-draw/dist/leaflet.draw.css";
@@ -85,10 +86,15 @@ export default function Map({
     <div className="relative" style={containerStyle}>
       <div ref={mapContainerRef} style={containerStyle} className={className} />
       <MapLoader isLoading={isLoading} />
+      <SearchInput
+        placeholder="Buscar..."
+        className="absolute top-4 left-1/2 -translate-x-1/2 z-1000"
+      />
       <BoundarySelector
         value={selectedBoundary}
         onValueChange={handleBoundaryChange}
         allowedBoundaries={allowedBoundaries}
+        className="absolute top-4 right-4 z-1000"
       />
     </div>
   );

@@ -1,5 +1,6 @@
 export { default as Map } from "./Map";
 export { BoundarySelector } from "./BoundarySelector";
+export { SearchInput } from "./SearchInput";
 export { MapLoader } from "./MapLoader";
 
 export * from "./types";

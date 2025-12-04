@@ -17,28 +17,40 @@ export interface MarkerPopupData {
   lng: string;
 }
 
+const styles = {
+  container: "min-width: 220px; max-height: 300px; overflow-y: auto;",
+  containerSmall: "min-width: 200px;",
+  title: "font-size: 12px;",
+  hr: "margin: 8px 0; border: none; border-top: 1px solid currentColor; opacity: 0.2;",
+  table: "width: 100%; font-size: 11px;",
+  tableMargin: "width: 100%; font-size: 11px; margin-top: 4px;",
+  label: "opacity: 0.7;",
+  value: "text-align: right; font-weight: 500;",
+  subtitle: "font-size: 11px;",
+};
+
 export function createPolygonPopup(data: PolygonPopupData): string {
   return `
-    <div style="min-width: 220px; max-height: 300px; overflow-y: auto;">
-      <strong style="font-size: 12px;">Informações da Área</strong>
-      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
-      <table style="width: 100%; font-size: 11px;">
+    <div style="${styles.container}">
+      <strong style="${styles.title}">Informações da Área</strong>
+      <hr style="${styles.hr}">
+      <table style="${styles.table}">
         <tr>
-          <td style="color: #666;">Tipo:</td>
-          <td style="text-align: right; font-weight: 500;">${data.type}</td>
+          <td style="${styles.label}">Tipo:</td>
+          <td style="${styles.value}">${data.type}</td>
         </tr>
         <tr>
-          <td style="color: #666;">Área:</td>
-          <td style="text-align: right; font-weight: 500;">${data.area}</td>
+          <td style="${styles.label}">Área:</td>
+          <td style="${styles.value}">${data.area}</td>
         </tr>
         <tr>
-          <td style="color: #666;">Pontos:</td>
-          <td style="text-align: right; font-weight: 500;">${data.pointCount}</td>
+          <td style="${styles.label}">Pontos:</td>
+          <td style="${styles.value}">${data.pointCount}</td>
         </tr>
       </table>
-      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
-      <strong style="font-size: 11px;">Coordenadas</strong>
-      <table style="width: 100%; font-size: 11px; margin-top: 4px;">
+      <hr style="${styles.hr}">
+      <strong style="${styles.subtitle}">Coordenadas</strong>
+      <table style="${styles.tableMargin}">
         ${data.pointsTable}
       </table>
     </div>
@@ -47,25 +59,25 @@ export function createPolygonPopup(data: PolygonPopupData): string {
 
 export function createCirclePopup(data: CirclePopupData): string {
   return `
-    <div style="min-width: 200px;">
-      <strong style="font-size: 12px;">Informações do Círculo</strong>
-      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
-      <table style="width: 100%; font-size: 11px;">
+    <div style="${styles.containerSmall}">
+      <strong style="${styles.title}">Informações do Círculo</strong>
+      <hr style="${styles.hr}">
+      <table style="${styles.table}">
         <tr>
-          <td style="color: #666;">Tipo:</td>
-          <td style="text-align: right; font-weight: 500;">Círculo</td>
+          <td style="${styles.label}">Tipo:</td>
+          <td style="${styles.value}">Círculo</td>
         </tr>
         <tr>
-          <td style="color: #666;">Raio:</td>
-          <td style="text-align: right; font-weight: 500;">${data.radius}</td>
+          <td style="${styles.label}">Raio:</td>
+          <td style="${styles.value}">${data.radius}</td>
         </tr>
         <tr>
-          <td style="color: #666;">Área:</td>
-          <td style="text-align: right; font-weight: 500;">${data.area}</td>
+          <td style="${styles.label}">Área:</td>
+          <td style="${styles.value}">${data.area}</td>
         </tr>
         <tr>
-          <td style="color: #666;">Centro:</td>
-          <td style="text-align: right; font-weight: 500;">${data.centerLat}, ${data.centerLng}</td>
+          <td style="${styles.label}">Centro:</td>
+          <td style="${styles.value}">${data.centerLat}, ${data.centerLng}</td>
         </tr>
       </table>
     </div>
@@ -74,21 +86,21 @@ export function createCirclePopup(data: CirclePopupData): string {
 
 export function createMarkerPopup(data: MarkerPopupData): string {
   return `
-    <div style="min-width: 200px;">
-      <strong style="font-size: 12px;">Informações do Marcador</strong>
-      <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
-      <table style="width: 100%; font-size: 11px;">
+    <div style="${styles.containerSmall}">
+      <strong style="${styles.title}">Informações do Marcador</strong>
+      <hr style="${styles.hr}">
+      <table style="${styles.table}">
         <tr>
-          <td style="color: #666;">Tipo:</td>
-          <td style="text-align: right; font-weight: 500;">Marcador</td>
+          <td style="${styles.label}">Tipo:</td>
+          <td style="${styles.value}">Marcador</td>
         </tr>
         <tr>
-          <td style="color: #666;">Latitude:</td>
-          <td style="text-align: right; font-weight: 500;">${data.lat}</td>
+          <td style="${styles.label}">Latitude:</td>
+          <td style="${styles.value}">${data.lat}</td>
         </tr>
         <tr>
-          <td style="color: #666;">Longitude:</td>
-          <td style="text-align: right; font-weight: 500;">${data.lng}</td>
+          <td style="${styles.label}">Longitude:</td>
+          <td style="${styles.value}">${data.lng}</td>
         </tr>
       </table>
     </div>
@@ -102,8 +114,8 @@ export function createPointRow(
 ): string {
   return `
     <tr>
-      <td style="color: #666;">Ponto ${index}:</td>
-      <td style="text-align: right; font-weight: 500;">${lat}, ${lng}</td>
+      <td style="${styles.label}">Ponto ${index}:</td>
+      <td style="${styles.value}">${lat}, ${lng}</td>
     </tr>
   `;
 }

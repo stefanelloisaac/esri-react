@@ -33,9 +33,9 @@ export function BoundarySelector({
     : allBoundaries;
 
   return (
-    <div className={cn("absolute top-4 right-4 z-1000", className)}>
+    <div className={cn(className)}>
       <Select value={value} onValueChange={onValueChange} key={value}>
-        <SelectTrigger className="w-[200px] bg-background shadow-md border">
+        <SelectTrigger className="w-[200px] bg-background/85! text-foreground! shadow-md border">
           <SelectValue placeholder="Selecione um estado" />
         </SelectTrigger>
         <SelectContent position="popper" sideOffset={5} className="z-1001">
