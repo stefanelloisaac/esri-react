@@ -49,9 +49,14 @@ src/
 ├── providers/             # React context providers
 │   └── theme-provider.tsx # next-themes wrapper
 ├── hooks/                 # Custom React hooks
-│   └── use-mobile.ts      # Mobile detection hook
-└── lib/
-    └── utils.ts           # Utility functions (cn helper)
+│   ├── use-mobile.ts      # Mobile detection hook
+│   ├── use-leaflet-map.ts # Core Leaflet map initialization
+│   ├── use-map-view.ts    # Map view updates
+│   ├── use-map-draw.ts    # Drawing tools integration
+│   └── use-stable-callback.ts # Stable callback refs
+├── lib/
+│   └── utils.ts           # Utility functions (cn helper)
+└── types/                 # TypeScript type definitions
 ```
 
 ### Import Aliases
@@ -84,10 +89,11 @@ shadcn/ui specific aliases in `components.json`:
 
 ### Theme System
 
-- **Provider**: `ThemeProvider` wraps the app in `layout.tsx`
+- **Provider**: `ThemeProvider` wraps the app in [src/app/layout.tsx](src/app/layout.tsx)
 - **Configuration**: Supports "light", "dark", and "system" modes
 - **Implementation**: Uses `next-themes` with class-based theme switching
 - **Component**: `ThemeToggle` dropdown provides theme selection UI
+
 
 ### shadcn/ui Components
 
@@ -105,7 +111,28 @@ npx shadcn@latest add <component-name>
 
 ### Mapping Integration
 
-The project includes `esri-leaflet` (v3.1.0) for Esri/ArcGIS mapping capabilities. Map components are located in `src/components/maps/`.
+The project includes `esri-leaflet` (v3.1.0) and `esri-leaflet-vector` (v4.3.2) for Esri/ArcGIS mapping capabilities. Map components are located in `src/components/maps/`.
+
+**Map Component Architecture**:
+The Map component uses a hooks-based composition pattern:
+- `useLeafletMap` - Core map initialization with Leaflet and Esri vector basemap
+- `useMapView` - Handles view updates (center/zoom changes)
+- `useMapDraw` - Manages Leaflet Draw plugin for drawing shapes
+- `useStableCallback` - Ensures callback stability across re-renders
+
+Map configuration is split across multiple files:
+- `Map.tsx` - Main component orchestrating all hooks
+- `Map.config.ts` - Map constants (default center, zoom, bounds)
+- `Map.options.ts` - Leaflet and basemap options
+- `Map.types.ts` - TypeScript types
+- `Map.draw.ts` - Drawing tool utilities
+
+**Environment Variables**:
+The map requires an ArcGIS API key set in `.env.local`:
+```bash
+NEXT_PUBLIC_ARCGIS_API_KEY=your_api_key_here
+```
+Get your API key from: https://developers.arcgis.com/
 
 ### Forms Pattern
 
@@ -149,3 +176,10 @@ Uses Next.js ESLint config with TypeScript support:
 - Reference theme colors via CSS variables (e.g., `bg-primary`, `text-foreground`)
 - Follow the established design system tokens
 - Use the `cn()` utility for conditional classes
+
+### Working with Maps
+1. **Map Component**: Use the `Map` component from `@/components/maps/Map`
+2. **Drawing Callbacks**: Pass `onShapeCreated`, `onShapeEdited`, `onShapeDeleted` props for shape events
+3. **Customization**: Modify map constants in `Map.config.ts` for bounds/defaults
+4. **Bounds Restriction**: Map is currently configured for Brazil bounds, panning is restricted
+5. **Leaflet Styles**: Always import `leaflet/dist/leaflet.css` when using Leaflet components

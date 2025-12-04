@@ -6,7 +6,7 @@ const Map = dynamic(() => import("@/components/maps/Map"), { ssr: false });
 export default function Home() {
   return (
     <main className="h-screen w-screen">
-      <Map height="100%" />
+      <Map height="100%" allowedBoundaries={["rs", "mt"]} />
     </main>
   );
 }

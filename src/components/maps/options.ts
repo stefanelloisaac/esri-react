@@ -1,10 +1,12 @@
-import type { MapOptions } from "leaflet";
-import { BRAZIL_BOUNDS, MAP_CONFIG } from "./Map.config";
+import L, { type MapOptions } from "leaflet";
+import { BRAZIL_BOUNDS, MAP_CONFIG } from "./config";
 
-export const getMapOptions = (): MapOptions => ({
+export const getMapOptions = (
+  bounds?: L.LatLngBoundsExpression
+): MapOptions => ({
   minZoom: MAP_CONFIG.MIN_ZOOM,
   maxZoom: MAP_CONFIG.MAX_ZOOM,
-  maxBounds: BRAZIL_BOUNDS,
+  maxBounds: bounds || BRAZIL_BOUNDS,
   maxBoundsViscosity: MAP_CONFIG.MAX_BOUNDS_VISCOSITY,
   worldCopyJump: false,
   preferCanvas: true,

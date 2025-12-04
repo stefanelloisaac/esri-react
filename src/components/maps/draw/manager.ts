@@ -1,15 +1,6 @@
 import L from "leaflet";
 import "leaflet-draw";
-
-export interface DrawControlOptions {
-  onShapeCreated?: (
-    layerType: string,
-    layer: L.Layer,
-    geoJSON: GeoJSON.Feature
-  ) => void;
-  onShapeEdited?: (layers: L.LayerGroup) => void;
-  onShapeDeleted?: (layers: L.LayerGroup) => void;
-}
+import type { DrawControlOptions } from "../types";
 
 export class MapDrawManager {
   private map: L.Map;

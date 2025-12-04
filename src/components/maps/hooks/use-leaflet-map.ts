@@ -2,20 +2,7 @@ import { useRef, useLayoutEffect } from "react";
 import L from "leaflet";
 import "esri-leaflet";
 import * as ELV from "esri-leaflet-vector";
-
-export interface UseLeafletMapOptions {
-  mapOptions: L.MapOptions;
-  basemapStyle: string;
-  basemapOptions: {
-    apikey: string | undefined;
-    version: number;
-    language: string;
-    preserveDrawingBuffer: boolean;
-  };
-  initialCenter: [number, number];
-  initialZoom: number;
-  bounds: L.LatLngBoundsExpression;
-}
+import type { UseLeafletMapOptions } from "../types";
 
 export function useLeafletMap(
   containerRef: React.RefObject<HTMLDivElement | null>,
@@ -50,13 +37,18 @@ export function useLeafletMap(
     basemap.addTo(map);
     basemapLayerRef.current = basemap;
 
-    const handleDrag = () => {
-      map.panInsideBounds(opts.bounds, { animate: false });
-    };
-    map.on("drag", handleDrag);
+    let handleDrag: (() => void) | undefined;
+    if (opts.bounds) {
+      handleDrag = () => {
+        map.panInsideBounds(opts.bounds!, { animate: false });
+      };
+      map.on("drag", handleDrag);
+    }
 
     return () => {
-      map.off("drag", handleDrag);
+      if (handleDrag) {
+        map.off("drag", handleDrag);
+      }
       map.remove();
       mapRef.current = null;
       basemapLayerRef.current = null;

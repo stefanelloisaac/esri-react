@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useEffect } from "react";
 import type L from "leaflet";
 
 export function useMapView(
@@ -10,9 +10,16 @@ export function useMapView(
   const prevCenterRef = useRef<[number, number]>(center);
   const prevZoomRef = useRef<number>(zoom);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const map = mapRef.current;
     if (!map || !isInitializedRef.current) return;
+
+    try {
+      const container = map.getContainer();
+      if (!container) return;
+    } catch {
+      return;
+    }
 
     const centerChanged =
       prevCenterRef.current[0] !== center[0] ||
