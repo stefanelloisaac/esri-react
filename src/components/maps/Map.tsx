@@ -3,7 +3,7 @@
 import { useRef, useMemo, useState } from "react";
 import { MAP_CONFIG, BASEMAP_STYLE } from "./config";
 import { getMapOptions, getBasemapOptions } from "./options";
-import { useLeafletMap, useMapView } from "./hooks";
+import { useLeafletMap } from "./hooks";
 import { useBoundaryManager, getBoundaryById } from "./boundaries";
 import { useMapDraw } from "./draw";
 import { useCallbacksRef } from "@/hooks/use-stable-callback";
@@ -31,12 +31,9 @@ export default function Map({
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const boundaryDef = selectedBoundary
-    ? getBoundaryById(selectedBoundary)
+  const initialBoundaryDef = defaultBoundary
+    ? getBoundaryById(defaultBoundary)
     : undefined;
-
-  const mapCenter = center ?? boundaryDef?.center ?? MAP_CONFIG.DEFAULT_CENTER;
-  const mapZoom = zoom ?? boundaryDef?.defaultZoom ?? MAP_CONFIG.DEFAULT_ZOOM;
 
   const mapOptions = useMemo(() => getMapOptions(), []);
   const basemapOptions = useMemo(
@@ -49,10 +46,10 @@ export default function Map({
       mapOptions,
       basemapStyle: BASEMAP_STYLE,
       basemapOptions,
-      initialCenter: mapCenter,
-      initialZoom: mapZoom,
+      initialCenter: initialBoundaryDef?.center ?? center ?? MAP_CONFIG.DEFAULT_CENTER,
+      initialZoom: initialBoundaryDef?.defaultZoom ?? zoom ?? MAP_CONFIG.DEFAULT_ZOOM,
     }),
-    [mapOptions, basemapOptions, mapCenter, mapZoom]
+    [mapOptions, basemapOptions, initialBoundaryDef, center, zoom]
   );
 
   const callbacksRef = useCallbacksRef({
@@ -66,14 +63,10 @@ export default function Map({
     leafletMapOptions
   );
 
-  useMapView(mapRef, isInitializedRef, mapCenter, mapZoom);
   useMapDraw(mapRef, isInitializedRef, callbacksRef);
 
   useBoundaryManager(mapRef, isInitializedRef, {
     selectedBoundary,
-    onBoundaryChanged: (boundaryId) => {
-      setSelectedBoundary(boundaryId);
-    },
     onLoadingStart: () => {
       setIsLoading(true);
     },

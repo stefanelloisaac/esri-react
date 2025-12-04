@@ -44,9 +44,6 @@ export function useBoundaryManager(
       if (boundaryManagerRef.current) return;
 
       const manager = new BoundaryManager(map, {
-        onBoundaryChanged: (boundaryId) => {
-          optionsRef.current.onBoundaryChanged?.(boundaryId);
-        },
         onLoadingStart: () => {
           optionsRef.current.onLoadingStart?.();
         },
@@ -63,7 +60,7 @@ export function useBoundaryManager(
       ) {
         const boundary = getBoundaryById(optionsRef.current.selectedBoundary);
         if (boundary) {
-          manager.changeBoundary(boundary);
+          manager.changeBoundary(boundary, false);
           initialBoundaryAppliedRef.current = true;
         }
       }
@@ -101,7 +98,8 @@ export function useBoundaryManager(
       if (currentBoundary?.id !== selectedBoundary) {
         const boundary = getBoundaryById(selectedBoundary);
         if (boundary) {
-          manager.changeBoundary(boundary);
+          const shouldAnimate = currentBoundary !== null;
+          manager.changeBoundary(boundary, shouldAnimate);
         }
       }
     }

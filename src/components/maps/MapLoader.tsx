@@ -45,7 +45,7 @@ export function MapLoader({
     <div
       className={cn(
         "absolute inset-0 z-999 flex items-center justify-center",
-        "bg-neutral-900",
+        "bg-neutral-900/80",
         "transition-opacity duration-300 ease-out",
         isActive ? "opacity-100" : "opacity-0 pointer-events-none",
         className

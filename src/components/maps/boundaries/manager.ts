@@ -25,7 +25,7 @@ export class BoundaryManager {
     }
   }
 
-  public changeBoundary(boundary: BoundaryDefinition): void {
+  public changeBoundary(boundary: BoundaryDefinition, animate = true): void {
     if (!this.isMapValid()) return;
 
     if (this.transitionTimeoutId) {
@@ -39,20 +39,31 @@ export class BoundaryManager {
 
     this.currentBoundary = boundary;
 
-    this.options.onBoundaryChanged?.(boundary.id);
+    if (animate) {
+      this.map.flyTo(boundary.center, boundary.defaultZoom, {
+        duration: 1.2,
+        easeLinearity: 0.5,
+      });
 
-    this.transitionTimeoutId = setTimeout(() => {
-      if (!this.isMapValid()) return;
+      this.transitionTimeoutId = setTimeout(() => {
+        if (!this.isMapValid()) return;
+
+        this.attachBoundaryEnforcement(boundary.bounds);
+        this.setupTileLoadListener();
+      }, 1300);
+    } else {
+      this.map.setView(boundary.center, boundary.defaultZoom, {
+        animate: false,
+      });
 
       this.attachBoundaryEnforcement(boundary.bounds);
 
-      this.setupTileLoadListener();
-
-      this.map.fitBounds(boundary.bounds, {
-        padding: [20, 20],
-        animate: false,
-      });
-    }, 1000);
+      setTimeout(() => {
+        if (this.isMapValid()) {
+          this.setupTileLoadListener();
+        }
+      }, 100);
+    }
   }
 
   private setupTileLoadListener(): void {
@@ -60,24 +71,14 @@ export class BoundaryManager {
 
     if (this.tileLoadHandler) {
       this.map.off("moveend", this.tileLoadHandler);
+      this.tileLoadHandler = null;
     }
 
-    this.tileLoadHandler = () => {
-      if (!this.isMapValid()) return;
-
-      setTimeout(() => {
-        if (this.isMapValid()) {
-          this.options.onTilesLoaded?.();
-        }
-      }, 300);
-
-      if (this.tileLoadHandler && this.isMapValid()) {
-        this.map.off("moveend", this.tileLoadHandler);
-        this.tileLoadHandler = null;
+    setTimeout(() => {
+      if (this.isMapValid()) {
+        this.options.onTilesLoaded?.();
       }
-    };
-
-    this.map.once("moveend", this.tileLoadHandler);
+    }, 500);
   }
 
   private attachBoundaryEnforcement(bounds: L.LatLngBoundsExpression): void {
@@ -95,10 +96,14 @@ export class BoundaryManager {
   }
 
   private removeBoundaryEnforcement(): void {
-    if (this.dragHandler && this.isMapValid()) {
+    if (!this.isMapValid()) return;
+
+    if (this.dragHandler) {
       this.map.off("drag", this.dragHandler);
       this.dragHandler = null;
     }
+
+    this.map.setMaxBounds(null as unknown as L.LatLngBoundsExpression);
   }
 
   public getCurrentBoundary(): BoundaryDefinition | null {
