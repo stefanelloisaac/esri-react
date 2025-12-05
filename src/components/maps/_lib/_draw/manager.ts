@@ -1,6 +1,5 @@
 import L from "leaflet";
 import "leaflet-draw";
-import type { DrawControlOptions } from "../../_types";
 import {
   createPolygonPopup,
   createCirclePopup,
@@ -8,6 +7,7 @@ import {
   createPointRow,
 } from "./templates";
 import { DEFAULT_DRAW_COLOR, getShapeOptions, type DrawColor } from "./colors";
+import { MapDrawControlOptions } from "../../_types";
 
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })
   ._getIconUrl;
@@ -129,10 +129,10 @@ export class MapDrawManager {
   private map: L.Map;
   private drawnItems: L.FeatureGroup;
   private drawControl: L.Control.Draw;
-  private options: DrawControlOptions;
+  private options: MapDrawControlOptions;
   private currentColor: DrawColor;
 
-  constructor(map: L.Map, options: DrawControlOptions = {}) {
+  constructor(map: L.Map, options: MapDrawControlOptions = {}) {
     this.map = map;
     this.options = options;
     this.drawnItems = new L.FeatureGroup();

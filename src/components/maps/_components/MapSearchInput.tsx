@@ -4,18 +4,13 @@ import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MapSearchInputProps } from "../_types";
 
-export interface SearchInputProps {
-  onSearch?: (query: string) => void;
-  placeholder?: string;
-  className?: string;
-}
-
-export function SearchInput({
+export function MapSearchInput({
   onSearch,
   placeholder = "Buscar...",
   className,
-}: SearchInputProps) {
+}: MapSearchInputProps) {
   const [inputValue, setInputValue] = useState("");
   const [, startTransition] = useTransition();
 

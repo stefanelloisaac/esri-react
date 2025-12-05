@@ -8,21 +8,15 @@ import {
 } from "@/components/ui/popover";
 import { Palette, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DRAW_COLORS, DrawColor } from "../_lib/_draw/colors";
+import { DRAW_COLORS } from "../_lib/_draw/colors";
+import { MapColorPickerProps } from "../_types";
 
-export interface ColorPickerProps {
-  selectedColor: DrawColor;
-  onColorChange: (color: DrawColor) => void;
-  disabled?: boolean;
-  className?: string;
-}
-
-export function ColorPicker({
+export function MapColorPicker({
   selectedColor,
   onColorChange,
   disabled = false,
   className,
-}: ColorPickerProps) {
+}: MapColorPickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>

@@ -1,6 +1,6 @@
-import type { BoundaryDefinition } from "../../_types";
+import { MapBoundaryDefinition } from "../../_types";
 
-export const BOUNDARIES: Record<string, BoundaryDefinition> = {
+export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
   ac: {
     id: "ac",
     name: "Acre",
@@ -273,7 +273,9 @@ export const BOUNDARIES: Record<string, BoundaryDefinition> = {
   },
 };
 
-export const getBoundaryById = (id: string): BoundaryDefinition | undefined => {
+export const getBoundaryById = (
+  id: string
+): MapBoundaryDefinition | undefined => {
   return BOUNDARIES[id];
 };
 

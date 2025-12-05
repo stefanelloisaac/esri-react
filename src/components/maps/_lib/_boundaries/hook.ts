@@ -2,12 +2,12 @@ import { useRef, useEffect } from "react";
 import L from "leaflet";
 import { BoundaryManager } from "./manager";
 import { getBoundaryById } from "./data";
-import type { UseBoundaryManagerOptions } from "../../_types";
+import { UseMapBoundaryManagerOptions } from "../../_types";
 
 export function useBoundaryManager(
   mapRef: React.RefObject<L.Map | null>,
   isInitializedRef: React.RefObject<boolean>,
-  options: UseBoundaryManagerOptions
+  options: UseMapBoundaryManagerOptions
 ) {
   const boundaryManagerRef = useRef<BoundaryManager | null>(null);
   const optionsRef = useRef(options);

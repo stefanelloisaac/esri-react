@@ -3,20 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Save, Upload, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { DrawColor } from "../_lib/_draw/colors";
-import { ColorPicker } from "./ColorPicker";
+import { MapColorPicker } from "./MapColorPicker";
+import { MapDrawingControlsProps } from "../_types";
 
-export interface DrawingControlsProps {
-  onSave?: () => void;
-  onLoad?: () => void;
-  onClear?: () => void;
-  selectedColor?: DrawColor;
-  onColorChange?: (color: DrawColor) => void;
-  className?: string;
-  disabled?: boolean;
-}
-
-export function DrawingControls({
+export function MapDrawingControls({
   onSave,
   onLoad,
   onClear,
@@ -24,7 +14,7 @@ export function DrawingControls({
   onColorChange,
   className,
   disabled = false,
-}: DrawingControlsProps) {
+}: MapDrawingControlsProps) {
   return (
     <div
       className={cn(
@@ -34,7 +24,7 @@ export function DrawingControls({
     >
       {selectedColor && onColorChange && (
         <>
-          <ColorPicker
+          <MapColorPicker
             selectedColor={selectedColor}
             onColorChange={onColorChange}
             disabled={disabled}

@@ -5,15 +5,15 @@ import { MAP_CONFIG, BASEMAP_STYLE } from "./_configs/config";
 import { getMapOptions, getBasemapOptions } from "./_configs/options";
 import {
   useLeafletMap,
-  useCallbacksRef,
-  useDrawingsPersistence,
+  useLeafletCallback,
+  useLeafletDrawings,
 } from "./_hooks";
 import { useBoundaryManager, getBoundaryById } from "./_lib/_boundaries";
 import { useMapDraw } from "./_lib/_draw";
-import { BoundarySelector } from "./_components/BoundarySelector";
-import { SearchInput } from "./_components/SearchInput";
+import { MapBoundarySelector } from "./_components/MapBoundarySelector";
+import { MapSearchInput } from "./_components/MapSearchInput";
 import { MapLoader } from "./_components/MapLoader";
-import { DrawingControls } from "./_components/DrawingControls";
+import { MapDrawingControls } from "./_components/MapDrawingControls";
 import { DEFAULT_DRAW_COLOR, type DrawColor } from "./_lib/_draw/colors";
 import type { MapProps } from "./_types";
 import "leaflet-draw/dist/leaflet.draw.css";
@@ -65,7 +65,7 @@ export default function Map({
   );
 
   const { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } =
-    useDrawingsPersistence();
+    useLeafletDrawings();
 
   const handleAutoSave = useCallback(
     (drawManager: ReturnType<typeof useMapDraw>["drawManagerRef"]) => {
@@ -77,7 +77,7 @@ export default function Map({
     [saveToLocalStorage]
   );
 
-  const callbacksRef = useCallbacksRef({
+  const callbacksRef = useLeafletCallback({
     onShapeCreated,
     onShapeEdited,
     onShapeDeleted,
@@ -90,7 +90,7 @@ export default function Map({
 
   const { drawManagerRef } = useMapDraw(mapRef, isInitializedRef, callbacksRef);
 
-  // Auto-load drawings on mount and track when map is ready
+  // auto load desenhos salvos do localStorage
   useEffect(() => {
     const checkInterval = setInterval(() => {
       if (drawManagerRef.current && isInitializedRef.current) {
@@ -108,7 +108,7 @@ export default function Map({
     return () => clearInterval(checkInterval);
   }, [loadFromLocalStorage, drawManagerRef, isInitializedRef]);
 
-  // Auto-save on shape changes
+  // auto save quando mudar a forma do desenho
   useEffect(() => {
     if (!drawManagerRef.current) return;
 
@@ -116,7 +116,7 @@ export default function Map({
       handleAutoSave(drawManagerRef);
     };
 
-    // Save after any drawing operation
+    // guardar referências originais dos callbacks
     const originalOnShapeCreated = callbacksRef.current?.onShapeCreated;
     const originalOnShapeEdited = callbacksRef.current?.onShapeEdited;
     const originalOnShapeDeleted = callbacksRef.current?.onShapeDeleted;
@@ -197,10 +197,8 @@ export default function Map({
     onDrawingsExport?.(geoJSON);
   }, [drawManagerRef, onDrawingsExport]);
 
-  // Expose export method via effect
   useEffect(() => {
     if (onDrawingsExport && drawManagerRef.current) {
-      // This allows parent components to trigger export
       handleExportToDatabase();
     }
   }, [onDrawingsExport, drawManagerRef, handleExportToDatabase]);
@@ -211,11 +209,11 @@ export default function Map({
     <div className="relative" style={containerStyle}>
       <div ref={mapContainerRef} style={containerStyle} className={className} />
       <MapLoader isLoading={isLoading} />
-      <SearchInput
+      <MapSearchInput
         placeholder="Buscar..."
         className="absolute top-4 left-1/2 -translate-x-1/2 z-1000"
       />
-      <DrawingControls
+      <MapDrawingControls
         onSave={handleSave}
         onLoad={handleLoad}
         onClear={handleClear}
@@ -224,7 +222,7 @@ export default function Map({
         className="absolute top-4 right-1/6 -translate-x-1/2 z-1000"
         disabled={!isMapReady}
       />
-      <BoundarySelector
+      <MapBoundarySelector
         value={selectedBoundary}
         onValueChange={handleBoundaryChange}
         allowedBoundaries={allowedBoundaries}

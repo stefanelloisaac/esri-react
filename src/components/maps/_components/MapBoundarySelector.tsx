@@ -10,14 +10,14 @@ import {
 } from "@/components/ui/select";
 import { getBoundaryNames } from "../_lib/_boundaries";
 import { cn } from "@/lib/utils";
-import type { BoundarySelectorProps } from "../_types";
+import { MapBoundarySelectorProps } from "../_types";
 
-export function BoundarySelector({
+export function MapBoundarySelector({
   value,
   onValueChange,
   allowedBoundaries,
   className,
-}: BoundarySelectorProps) {
+}: MapBoundarySelectorProps) {
   const isMountedRef = useRef(false);
 
   useEffect(() => {

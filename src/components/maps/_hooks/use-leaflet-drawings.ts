@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 const STORAGE_KEY = "map-drawings";
 
-export function useDrawingsPersistence() {
+export function useLeafletDrawings() {
   const saveToLocalStorage = useCallback(
     (geoJSON: GeoJSON.FeatureCollection) => {
       try {

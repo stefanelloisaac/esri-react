@@ -1,16 +1,16 @@
 import L from "leaflet";
-import type { BoundaryDefinition, BoundaryManagerOptions } from "../../_types";
+import { MapBoundaryDefinition, MapBoundaryManagerOptions } from "../../_types";
 
 export class BoundaryManager {
   private map: L.Map;
-  private options: BoundaryManagerOptions;
-  private currentBoundary: BoundaryDefinition | null = null;
+  private options: MapBoundaryManagerOptions;
+  private currentBoundary: MapBoundaryDefinition | null = null;
   private dragHandler: (() => void) | null = null;
   private tileLoadHandler: (() => void) | null = null;
   private transitionTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private isDestroyed: boolean = false;
 
-  constructor(map: L.Map, options: BoundaryManagerOptions = {}) {
+  constructor(map: L.Map, options: MapBoundaryManagerOptions = {}) {
     this.map = map;
     this.options = options;
   }
@@ -25,7 +25,7 @@ export class BoundaryManager {
     }
   }
 
-  public changeBoundary(boundary: BoundaryDefinition, animate = true): void {
+  public changeBoundary(boundary: MapBoundaryDefinition, animate = true): void {
     if (!this.isMapValid()) return;
 
     if (this.transitionTimeoutId) {
@@ -106,7 +106,7 @@ export class BoundaryManager {
     this.map.setMaxBounds(null as unknown as L.LatLngBoundsExpression);
   }
 
-  public getCurrentBoundary(): BoundaryDefinition | null {
+  public getCurrentBoundary(): MapBoundaryDefinition | null {
     return this.currentBoundary;
   }
 

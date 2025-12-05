@@ -1,29 +1,31 @@
 import type L from "leaflet";
+import { DrawColor } from "../_lib/_draw/colors";
 
-export type LatLng = [number, number];
+export type MapLatLng = [number, number];
 
-export type LatLngBounds = [LatLng, LatLng];
+export type MapLatLngBounds = [MapLatLng, MapLatLng];
 
-export interface BoundaryDefinition {
+export interface MapBoundaryDefinition {
   id: string;
   name: string;
-  bounds: LatLngBounds;
-  center: LatLng;
+  bounds: MapLatLngBounds;
+  center: MapLatLng;
   defaultZoom: number;
   geoJsonPath?: string;
 }
 
-export interface BoundaryManagerOptions {
+export interface MapBoundaryManagerOptions {
   onBoundaryChanged?: (boundaryId: string) => void;
   onLoadingStart?: () => void;
   onTilesLoaded?: () => void;
 }
 
-export interface UseBoundaryManagerOptions extends BoundaryManagerOptions {
+export interface UseMapBoundaryManagerOptions
+  extends MapBoundaryManagerOptions {
   selectedBoundary?: string;
 }
 
-export interface DrawControlOptions {
+export interface MapDrawControlOptions {
   onShapeCreated?: (
     layerType: string,
     layer: L.Layer,
@@ -33,16 +35,16 @@ export interface DrawControlOptions {
   onShapeDeleted?: (layers: L.LayerGroup) => void;
 }
 
-export interface MapProps extends DrawControlOptions {
+export interface MapProps extends MapDrawControlOptions {
   height?: string;
-  center?: LatLng;
+  center?: MapLatLng;
   zoom?: number;
   className?: string;
   allowedBoundaries?: string[];
   onDrawingsExport?: (geoJSON: GeoJSON.FeatureCollection) => void;
 }
 
-export interface BoundarySelectorProps {
+export interface MapBoundarySelectorProps {
   value?: string;
   onValueChange?: (value: string) => void;
   allowedBoundaries?: string[];
@@ -64,7 +66,30 @@ export interface UseLeafletMapOptions {
     language: string;
     preserveDrawingBuffer: boolean;
   };
-  initialCenter: LatLng;
+  initialCenter: MapLatLng;
   initialZoom: number;
   bounds?: L.LatLngBoundsExpression;
+}
+
+export interface MapColorPickerProps {
+  selectedColor: DrawColor;
+  onColorChange: (color: DrawColor) => void;
+  disabled?: boolean;
+  className?: string;
+}
+
+export interface MapDrawingControlsProps {
+  onSave?: () => void;
+  onLoad?: () => void;
+  onClear?: () => void;
+  selectedColor?: DrawColor;
+  onColorChange?: (color: DrawColor) => void;
+  className?: string;
+  disabled?: boolean;
+}
+
+export interface MapSearchInputProps {
+  onSearch?: (query: string) => void;
+  placeholder?: string;
+  className?: string;
 }
