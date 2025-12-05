@@ -1,4 +1,5 @@
 export interface PolygonPopupData {
+  name?: string;
   type: string;
   area: string;
   pointCount: number;
@@ -6,6 +7,7 @@ export interface PolygonPopupData {
 }
 
 export interface CirclePopupData {
+  name?: string;
   radius: string;
   area: string;
   centerLat: string;
@@ -13,6 +15,7 @@ export interface CirclePopupData {
 }
 
 export interface MarkerPopupData {
+  name?: string;
   lat: string;
   lng: string;
 }
@@ -32,7 +35,7 @@ const styles = {
 export function createPolygonPopup(data: PolygonPopupData): string {
   return `
     <div style="${styles.container}">
-      <strong style="${styles.title}">Informações da Área</strong>
+      <strong style="${styles.title}">${data.name || "Informações da Área"}</strong>
       <hr style="${styles.hr}">
       <table style="${styles.table}">
         <tr>
@@ -60,7 +63,7 @@ export function createPolygonPopup(data: PolygonPopupData): string {
 export function createCirclePopup(data: CirclePopupData): string {
   return `
     <div style="${styles.containerSmall}">
-      <strong style="${styles.title}">Informações do Círculo</strong>
+      <strong style="${styles.title}">${data.name || "Informações do Círculo"}</strong>
       <hr style="${styles.hr}">
       <table style="${styles.table}">
         <tr>
@@ -87,7 +90,7 @@ export function createCirclePopup(data: CirclePopupData): string {
 export function createMarkerPopup(data: MarkerPopupData): string {
   return `
     <div style="${styles.containerSmall}">
-      <strong style="${styles.title}">Informações do Marcador</strong>
+      <strong style="${styles.title}">${data.name || "Informações do Marcador"}</strong>
       <hr style="${styles.hr}">
       <table style="${styles.table}">
         <tr>

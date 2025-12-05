@@ -209,19 +209,17 @@ export default function Map({
     <div className="relative" style={containerStyle}>
       <div ref={mapContainerRef} style={containerStyle} className={className} />
       <MapLoader isLoading={isLoading} />
-      <MapSearchInput
-        placeholder="Buscar..."
-        className="absolute top-4 left-1/2 -translate-x-1/2 z-1000"
-      />
-      <MapDrawingControls
-        onSave={handleSave}
-        onLoad={handleLoad}
-        onClear={handleClear}
-        selectedColor={selectedColor}
-        onColorChange={handleColorChange}
-        className="absolute top-4 right-1/6 -translate-x-1/2 z-1000"
-        disabled={!isMapReady}
-      />
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-1000 flex items-center gap-1">
+        <MapSearchInput placeholder="Buscar..." />
+        <MapDrawingControls
+          onSave={handleSave}
+          onLoad={handleLoad}
+          onClear={handleClear}
+          selectedColor={selectedColor}
+          onColorChange={handleColorChange}
+          disabled={!isMapReady}
+        />
+      </div>
       <MapBoundarySelector
         value={selectedBoundary}
         onValueChange={handleBoundaryChange}

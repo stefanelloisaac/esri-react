@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import { HexColorPicker } from "react-colorful";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Palette, Check } from "lucide-react";
+import { Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { DRAW_COLORS } from "../_lib/_draw/colors";
 import { MapColorPickerProps } from "../_types";
 
 export function MapColorPicker({
@@ -17,6 +18,18 @@ export function MapColorPicker({
   disabled = false,
   className,
 }: MapColorPickerProps) {
+  const [color, setColor] = useState(selectedColor.hex);
+
+  const handleColorChange = (hex: string) => {
+    setColor(hex);
+    onColorChange({
+      id: "custom",
+      name: "Personalizado",
+      hex,
+      fillOpacity: 0.25,
+    });
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -34,30 +47,8 @@ export function MapColorPicker({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-3 z-1001" align="start">
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Escolher cor</p>
-          <div className="grid grid-cols-4 gap-2">
-            {DRAW_COLORS.map((color) => (
-              <button
-                key={color.id}
-                onClick={() => onColorChange(color)}
-                title={color.name}
-                className={cn(
-                  "w-10 h-10 rounded-md border-2 transition-all hover:scale-110",
-                  selectedColor.id === color.id
-                    ? "border-foreground ring-2 ring-ring/50"
-                    : "border-transparent hover:border-border"
-                )}
-                style={{ backgroundColor: color.hex }}
-              >
-                {selectedColor.id === color.id && (
-                  <Check className="w-5 h-5 text-white drop-shadow-md mx-auto" />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
+      <PopoverContent className="w-fit p-2 z-1001 -ml-1" align="start">
+        <HexColorPicker color={color} onChange={handleColorChange} />
       </PopoverContent>
     </Popover>
   );

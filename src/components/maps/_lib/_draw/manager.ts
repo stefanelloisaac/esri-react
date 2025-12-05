@@ -131,12 +131,14 @@ export class MapDrawManager {
   private drawControl: L.Control.Draw;
   private options: MapDrawControlOptions;
   private currentColor: DrawColor;
+  private drawingCounter: number;
 
   constructor(map: L.Map, options: MapDrawControlOptions = {}) {
     this.map = map;
     this.options = options;
     this.drawnItems = new L.FeatureGroup();
     this.currentColor = DEFAULT_DRAW_COLOR;
+    this.drawingCounter = 1;
     this.drawControl = this.createDrawControl();
     this.initialize();
   }
@@ -179,6 +181,12 @@ export class MapDrawManager {
     return this.currentColor;
   }
 
+  private generateDrawingName(): string {
+    const formattedNumber = String(this.drawingCounter).padStart(4, "0");
+    this.drawingCounter++;
+    return `${formattedNumber} - TALHÃO`;
+  }
+
   private initialize(): void {
     this.map.addLayer(this.drawnItems);
     this.map.addControl(this.drawControl);
@@ -205,6 +213,7 @@ export class MapDrawManager {
         geoJSONLayer.feature.properties = {};
       }
       geoJSONLayer.feature.properties.drawColor = this.currentColor;
+      geoJSONLayer.feature.properties.name = this.generateDrawingName();
 
       this.applyColorToLayer(layer, this.currentColor);
 
@@ -258,21 +267,99 @@ export class MapDrawManager {
   }
 
   public exportGeoJSON(): GeoJSON.FeatureCollection {
-    return this.drawnItems.toGeoJSON() as GeoJSON.FeatureCollection;
+    const features: GeoJSON.Feature[] = [];
+
+    this.drawnItems.eachLayer((layer: L.Layer) => {
+      const geoJSONLayer = layer as L.Layer & {
+        toGeoJSON: () => GeoJSON.Feature;
+        feature?: GeoJSON.Feature;
+      };
+
+      const feature = geoJSONLayer.toGeoJSON();
+
+      if (layer instanceof L.Circle) {
+        const circle = layer as L.Circle;
+        feature.properties = {
+          ...feature.properties,
+          radius: circle.getRadius(),
+          center: [circle.getLatLng().lat, circle.getLatLng().lng],
+          layerType: "circle",
+        };
+      }
+
+      if (geoJSONLayer.feature?.properties?.drawColor) {
+        feature.properties = {
+          ...feature.properties,
+          drawColor: geoJSONLayer.feature.properties.drawColor,
+        };
+      }
+
+      if (geoJSONLayer.feature?.properties?.name) {
+        feature.properties = {
+          ...feature.properties,
+          name: geoJSONLayer.feature.properties.name,
+        };
+      }
+
+      features.push(feature);
+    });
+
+    return {
+      type: "FeatureCollection",
+      features,
+    };
   }
 
   public importGeoJSON(geoJSON: GeoJSON.FeatureCollection): void {
     this.clearAll();
-    L.geoJSON(geoJSON, {
-      onEachFeature: (feature, layer) => {
-        const geoJSONLayer = layer as L.Layer & { feature?: GeoJSON.Feature };
+
+    let maxCounter = 0;
+    geoJSON.features.forEach((feature) => {
+      if (feature.properties?.name) {
+        const match = feature.properties.name.match(/^(\d+)/);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (num > maxCounter) {
+            maxCounter = num;
+          }
+        }
+      }
+    });
+    this.drawingCounter = maxCounter + 1;
+
+    geoJSON.features.forEach((feature) => {
+      if (feature.properties?.layerType === "circle") {
+        const center = feature.properties.center as [number, number];
+        const radius = feature.properties.radius as number;
+
+        const circle = L.circle([center[0], center[1]], { radius });
+        const geoJSONLayer = circle as L.Layer & { feature?: GeoJSON.Feature };
         geoJSONLayer.feature = feature;
 
         if (feature.properties?.drawColor) {
-          this.applyColorToLayer(layer, feature.properties.drawColor);
+          this.applyColorToLayer(circle, feature.properties.drawColor);
         }
-        this.drawnItems.addLayer(layer);
-      },
+
+        this.drawnItems.addLayer(circle);
+        this.bindPopupToLayer(circle, "circle");
+      } else {
+        L.geoJSON(feature, {
+          onEachFeature: (_f, layer) => {
+            const geoJSONLayer = layer as L.Layer & {
+              feature?: GeoJSON.Feature;
+            };
+            geoJSONLayer.feature = feature;
+
+            if (feature.properties?.drawColor) {
+              this.applyColorToLayer(layer, feature.properties.drawColor);
+            }
+
+            const layerType = this.getLayerType(layer);
+            this.bindPopupToLayer(layer, layerType);
+            this.drawnItems.addLayer(layer);
+          },
+        });
+      }
     });
   }
 
@@ -346,6 +433,8 @@ export class MapDrawManager {
 
   private bindPopupToLayer(layer: L.Layer, layerType: string): void {
     let popupContent = "";
+    const geoJSONLayer = layer as L.Layer & { feature?: GeoJSON.Feature };
+    const name = geoJSONLayer.feature?.properties?.name;
 
     if (layerType === "polygon" || layerType === "rectangle") {
       const polygonLayer = layer as L.Polygon;
@@ -353,6 +442,7 @@ export class MapDrawManager {
       const points = this.getPolygonPoints(polygonLayer);
 
       popupContent = createPolygonPopup({
+        name,
         type: layerType === "polygon" ? "Polígono" : "Retângulo",
         area: this.formatArea(area),
         pointCount: points.length,
@@ -365,6 +455,7 @@ export class MapDrawManager {
       const area = Math.PI * radius * radius;
 
       popupContent = createCirclePopup({
+        name,
         radius: this.formatDistance(radius),
         area: this.formatArea(area),
         centerLat: center.lat.toFixed(4),
@@ -375,6 +466,7 @@ export class MapDrawManager {
       const position = markerLayer.getLatLng();
 
       popupContent = createMarkerPopup({
+        name,
         lat: position.lat.toFixed(6),
         lng: position.lng.toFixed(6),
       });

@@ -24,14 +24,14 @@ export function MapSearchInput({
   };
 
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative w-[400px]", className)}>
       <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         type="text"
         placeholder={placeholder}
         value={inputValue}
         onChange={handleChange}
-        className="w-[400px] pl-8 shadow-md border bg-background/85! text-foreground!"
+        className="w-full pl-8 shadow-md border bg-background/85! text-foreground!"
       />
     </div>
   );
