@@ -1,54 +1,89 @@
 "use client";
 
 import { useRef, useMemo, useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
+import L from "leaflet";
 import { MAP_CONFIG, BASEMAP_STYLE } from "./_configs/config";
 import { getMapOptions, getBasemapOptions } from "./_configs/options";
+import { useLeafletMap, useLeafletCallback } from "./_hooks";
 import {
-  useLeafletMap,
-  useLeafletCallback,
-  useLeafletDrawings,
-} from "./_hooks";
-import { useBoundaryManager, getBoundaryById } from "./_lib/_boundaries";
+  useBoundaryManager,
+  getBoundaryById,
+  detectBoundariesFromGeoJSON,
+  detectBoundaryFromCoordinates,
+} from "./_lib/_boundaries";
 import { useMapDraw } from "./_lib/_draw";
 import { MapBoundarySelector } from "./_components/MapBoundarySelector";
 import { MapSearchInput } from "./_components/MapSearchInput";
 import { MapLoader } from "./_components/MapLoader";
+import { MapError } from "./_components/MapError";
 import { MapDrawingControls } from "./_components/MapDrawingControls";
-import { DEFAULT_DRAW_COLOR, type DrawColor } from "./_lib/_draw/colors";
+import {
+  DEFAULT_DRAW_COLOR,
+  getShapeOptions,
+  type DrawColor,
+} from "./_lib/_draw/colors";
 import type { MapProps } from "./_types";
 import "leaflet-draw/dist/leaflet.draw.css";
+import "./map-styles.css";
+import { cn } from "@/lib/utils";
+import { useMap } from "@/contexts/map.context";
 
 export default function Map({
-  height = "500px",
-  center,
-  zoom,
+  data,
+  searchField = "descricaotalhao",
+  height,
   className = "",
   onShapeCreated,
   onShapeEdited,
   onShapeDeleted,
-  onDrawingsExport,
-  allowedBoundaries,
+  onSave,
 }: MapProps) {
+  // MARK: - Refs
   const mapContainerRef = useRef<HTMLDivElement>(null);
+  const hasLoadedInitialData = useRef(false);
+  const matchingLayersRef = useRef<L.Layer[]>([]);
+  const currentMatchIndexRef = useRef(0);
 
-  const defaultBoundary = allowedBoundaries?.[0];
-  const [selectedBoundary, setSelectedBoundary] = useState<string | undefined>(
-    defaultBoundary
-  );
+  // MARK: - Contextos
+  const { arcgisApiKey, isLoading: isApiKeyLoading } = useMap();
 
+  // MARK: - Estados
   const [isLoading, setIsLoading] = useState(true);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [selectedColor, setSelectedColor] =
     useState<DrawColor>(DEFAULT_DRAW_COLOR);
+  const [currentSearchQuery, setCurrentSearchQuery] = useState("");
+
+  // MARK: - Detecção de Limites
+  const detectedBoundaries = useMemo(
+    () => detectBoundariesFromGeoJSON(data),
+    [data],
+  );
+  const defaultBoundary = detectedBoundaries?.[0];
+  const [selectedBoundary, setSelectedBoundary] = useState<string | undefined>(
+    defaultBoundary,
+  );
 
   const initialBoundaryDef = defaultBoundary
     ? getBoundaryById(defaultBoundary)
     : undefined;
 
-  const mapOptions = useMemo(() => getMapOptions(), []);
+  const currentBoundaryDef = selectedBoundary
+    ? getBoundaryById(selectedBoundary)
+    : undefined;
+
+  // MARK: - Configurações do Mapa
+  const mapOptions = useMemo(
+    () =>
+      getMapOptions(currentBoundaryDef?.bounds, currentBoundaryDef?.minZoom),
+    [currentBoundaryDef],
+  );
+
   const basemapOptions = useMemo(
-    () => getBasemapOptions(process.env.NEXT_PUBLIC_ARCGIS_API_KEY),
-    []
+    () => getBasemapOptions(arcgisApiKey ?? undefined),
+    [arcgisApiKey],
   );
 
   const leafletMapOptions = useMemo(
@@ -56,27 +91,13 @@ export default function Map({
       mapOptions,
       basemapStyle: BASEMAP_STYLE,
       basemapOptions,
-      initialCenter:
-        initialBoundaryDef?.center ?? center ?? MAP_CONFIG.DEFAULT_CENTER,
-      initialZoom:
-        initialBoundaryDef?.defaultZoom ?? zoom ?? MAP_CONFIG.DEFAULT_ZOOM,
+      initialCenter: initialBoundaryDef?.center ?? MAP_CONFIG.DEFAULT_CENTER,
+      initialZoom: initialBoundaryDef?.defaultZoom ?? MAP_CONFIG.DEFAULT_ZOOM,
     }),
-    [mapOptions, basemapOptions, initialBoundaryDef, center, zoom]
+    [mapOptions, basemapOptions, initialBoundaryDef],
   );
 
-  const { saveToLocalStorage, loadFromLocalStorage, clearLocalStorage } =
-    useLeafletDrawings();
-
-  const handleAutoSave = useCallback(
-    (drawManager: ReturnType<typeof useMapDraw>["drawManagerRef"]) => {
-      if (drawManager.current) {
-        const geoJSON = drawManager.current.exportGeoJSON();
-        saveToLocalStorage(geoJSON);
-      }
-    },
-    [saveToLocalStorage]
-  );
-
+  // MARK: - Inicialização do Mapa
   const callbacksRef = useLeafletCallback({
     onShapeCreated,
     onShapeEdited,
@@ -85,57 +106,10 @@ export default function Map({
 
   const { mapRef, isInitializedRef } = useLeafletMap(
     mapContainerRef,
-    leafletMapOptions
+    leafletMapOptions,
   );
 
   const { drawManagerRef } = useMapDraw(mapRef, isInitializedRef, callbacksRef);
-
-  // auto load desenhos salvos do localStorage
-  useEffect(() => {
-    const checkInterval = setInterval(() => {
-      if (drawManagerRef.current && isInitializedRef.current) {
-        setIsMapReady(true);
-
-        const savedGeoJSON = loadFromLocalStorage();
-        if (savedGeoJSON) {
-          drawManagerRef.current.importGeoJSON(savedGeoJSON);
-        }
-
-        clearInterval(checkInterval);
-      }
-    }, 100);
-
-    return () => clearInterval(checkInterval);
-  }, [loadFromLocalStorage, drawManagerRef, isInitializedRef]);
-
-  // auto save quando mudar a forma do desenho
-  useEffect(() => {
-    if (!drawManagerRef.current) return;
-
-    const autoSaveHandler = () => {
-      handleAutoSave(drawManagerRef);
-    };
-
-    // guardar referências originais dos callbacks
-    const originalOnShapeCreated = callbacksRef.current?.onShapeCreated;
-    const originalOnShapeEdited = callbacksRef.current?.onShapeEdited;
-    const originalOnShapeDeleted = callbacksRef.current?.onShapeDeleted;
-
-    callbacksRef.current = {
-      onShapeCreated: (layerType, layer, geoJSON) => {
-        originalOnShapeCreated?.(layerType, layer, geoJSON);
-        autoSaveHandler();
-      },
-      onShapeEdited: (layers) => {
-        originalOnShapeEdited?.(layers);
-        autoSaveHandler();
-      },
-      onShapeDeleted: (layers) => {
-        originalOnShapeDeleted?.(layers);
-        autoSaveHandler();
-      },
-    };
-  }, [drawManagerRef, callbacksRef, handleAutoSave]);
 
   useBoundaryManager(mapRef, isInitializedRef, {
     selectedBoundary,
@@ -147,8 +121,19 @@ export default function Map({
     },
   });
 
+  // MARK: - Estados Derivados
+  const isCombinedLoading = isApiKeyLoading || isLoading;
+  const hasApiKeyError = !isApiKeyLoading && arcgisApiKey === null;
+
+  // MARK: - Handlers
+  const handleRetryApiKey = useCallback(() => {
+    window.location.reload();
+  }, []);
+
   const handleBoundaryChange = (boundaryId: string) => {
     setSelectedBoundary(boundaryId);
+    setCurrentSearchQuery("");
+    handleSearch("");
   };
 
   const handleColorChange = useCallback(
@@ -158,73 +143,231 @@ export default function Map({
         drawManagerRef.current.setDrawColor(color);
       }
     },
-    [drawManagerRef]
+    [drawManagerRef],
   );
 
   const handleSave = useCallback(() => {
     if (!drawManagerRef.current) return;
 
     const geoJSON = drawManagerRef.current.exportGeoJSON();
-    const success = saveToLocalStorage(geoJSON);
+    onSave?.(geoJSON);
+    setHasUnsavedChanges(false);
 
-    if (success) {
-      console.log("Drawings saved to localStorage");
-    }
-  }, [drawManagerRef, saveToLocalStorage]);
-
-  const handleLoad = useCallback(() => {
-    if (!drawManagerRef.current) return;
-
-    const savedGeoJSON = loadFromLocalStorage();
-    if (savedGeoJSON) {
-      drawManagerRef.current.importGeoJSON(savedGeoJSON);
-      console.log("Drawings loaded from localStorage");
-    }
-  }, [drawManagerRef, loadFromLocalStorage]);
+    toast.success("Sucesso!", {
+      description: "Desenhos salvos com sucesso!",
+    });
+  }, [drawManagerRef, onSave]);
 
   const handleClear = useCallback(() => {
     if (!drawManagerRef.current) return;
 
     drawManagerRef.current.clearAll();
-    clearLocalStorage();
-    console.log("All drawings cleared");
-  }, [drawManagerRef, clearLocalStorage]);
+    setHasUnsavedChanges(false);
+  }, [drawManagerRef]);
 
-  const handleExportToDatabase = useCallback(() => {
-    if (!drawManagerRef.current) return;
+  const handleSearch = useCallback(
+    (query: string) => {
+      if (!drawManagerRef.current || !mapRef.current) return;
 
-    const geoJSON = drawManagerRef.current.exportGeoJSON();
-    onDrawingsExport?.(geoJSON);
-  }, [drawManagerRef, onDrawingsExport]);
+      setCurrentSearchQuery(query);
+
+      const drawnItems = drawManagerRef.current.getDrawnItems();
+      const normalizedQuery = query.toLowerCase().trim();
+      const matchingLayers: L.Layer[] = [];
+
+      drawnItems.eachLayer((layer: L.Layer) => {
+        const geoJSONLayer = layer as L.Layer & { feature?: GeoJSON.Feature };
+        const fieldValue =
+          geoJSONLayer.feature?.properties?.[searchField] || "";
+
+        const matches = String(fieldValue)
+          .toLowerCase()
+          .includes(normalizedQuery);
+
+        let isInSelectedBoundary = true;
+        if (selectedBoundary && geoJSONLayer.feature?.geometry) {
+          const coords: Array<[number, number]> = [];
+          const geometry = geoJSONLayer.feature.geometry;
+
+          if (
+            geometry.type === "Polygon" &&
+            Array.isArray(geometry.coordinates[0])
+          ) {
+            geometry.coordinates[0].forEach((coord: any) => {
+              if (Array.isArray(coord) && coord.length === 2) {
+                coords.push([coord[1], coord[0]]);
+              }
+            });
+          }
+
+          const layerBoundary = detectBoundaryFromCoordinates(coords);
+          isInSelectedBoundary = layerBoundary === selectedBoundary;
+        }
+
+        if (matches && normalizedQuery !== "" && isInSelectedBoundary) {
+          matchingLayers.push(layer);
+        }
+
+        if ("setStyle" in layer && typeof layer.setStyle === "function") {
+          const currentColor =
+            geoJSONLayer.feature?.properties?.drawColor || DEFAULT_DRAW_COLOR;
+          const shapeOptions = getShapeOptions(currentColor);
+
+          if (normalizedQuery === "") {
+            (layer as L.Path).setStyle({
+              opacity: shapeOptions.weight ? shapeOptions.weight / 3 : 0.65,
+              fillOpacity: shapeOptions.fillOpacity || 0.2,
+            });
+          } else if (matches && isInSelectedBoundary) {
+            (layer as L.Path).setStyle({
+              opacity: 1,
+              fillOpacity: 0.5,
+            });
+          } else {
+            (layer as L.Path).setStyle({
+              opacity: 0.2,
+              fillOpacity: 0.05,
+            });
+          }
+        }
+      });
+
+      matchingLayersRef.current = matchingLayers;
+      currentMatchIndexRef.current = 0;
+
+      if (matchingLayers.length > 0) {
+        const layer = matchingLayers[0];
+        if ("getBounds" in layer && typeof layer.getBounds === "function") {
+          mapRef.current?.fitBounds((layer as L.Polygon).getBounds(), {
+            padding: [50, 50],
+          });
+        } else if (
+          "getLatLng" in layer &&
+          typeof layer.getLatLng === "function"
+        ) {
+          mapRef.current?.setView(
+            (layer as L.Circle).getLatLng(),
+            mapRef.current.getZoom(),
+          );
+        }
+      }
+    },
+    [drawManagerRef, mapRef, selectedBoundary, searchField],
+  );
+
+  const handleCycle = useCallback(() => {
+    if (!mapRef.current || matchingLayersRef.current.length === 0) return;
+
+    currentMatchIndexRef.current =
+      (currentMatchIndexRef.current + 1) % matchingLayersRef.current.length;
+
+    const layer = matchingLayersRef.current[currentMatchIndexRef.current];
+
+    if ("getBounds" in layer && typeof layer.getBounds === "function") {
+      mapRef.current.fitBounds((layer as L.Polygon).getBounds(), {
+        padding: [50, 50],
+      });
+    } else if ("getLatLng" in layer && typeof layer.getLatLng === "function") {
+      mapRef.current.setView(
+        (layer as L.Circle).getLatLng(),
+        mapRef.current.getZoom(),
+      );
+    }
+  }, [mapRef]);
+
+  // MARK: - Effects
+  useEffect(() => {
+    if (hasLoadedInitialData.current) return;
+
+    const checkInterval = setInterval(() => {
+      if (drawManagerRef.current && isInitializedRef.current) {
+        setIsMapReady(true);
+
+        if (data) {
+          drawManagerRef.current.importGeoJSON(data, true);
+          hasLoadedInitialData.current = true;
+        }
+
+        clearInterval(checkInterval);
+      }
+    }, 100);
+
+    return () => clearInterval(checkInterval);
+  }, [drawManagerRef, isInitializedRef, data]);
 
   useEffect(() => {
-    if (onDrawingsExport && drawManagerRef.current) {
-      handleExportToDatabase();
-    }
-  }, [onDrawingsExport, drawManagerRef, handleExportToDatabase]);
+    if (!drawManagerRef.current) return;
 
-  const containerStyle = useMemo(() => ({ height, width: "100%" }), [height]);
+    const changeHandler = () => {
+      setHasUnsavedChanges(true);
+    };
+
+    const map = mapRef.current;
+    if (!map) return;
+
+    map.on("draw:created", changeHandler);
+    map.on("draw:edited", changeHandler);
+    map.on("draw:deleted", changeHandler);
+
+    return () => {
+      map.off("draw:created", changeHandler);
+      map.off("draw:edited", changeHandler);
+      map.off("draw:deleted", changeHandler);
+    };
+  }, [drawManagerRef, mapRef]);
+
+  useEffect(() => {
+    if (currentSearchQuery && drawManagerRef.current && mapRef.current) {
+      handleSearch(currentSearchQuery);
+    }
+  }, [
+    selectedBoundary,
+    currentSearchQuery,
+    handleSearch,
+    drawManagerRef,
+    mapRef,
+  ]);
+
+  // MARK: - Render
+  const containerStyle = useMemo(
+    () => ({
+      height: height || "100%",
+      width: "100%",
+    }),
+    [height],
+  );
 
   return (
-    <div className="relative" style={containerStyle}>
-      <div ref={mapContainerRef} style={containerStyle} className={className} />
-      <MapLoader isLoading={isLoading} />
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-1000 flex items-center gap-1">
-        <MapSearchInput placeholder="Buscar..." />
+    <div
+      className="relative isolate rounded-lg border overflow-hidden"
+      style={containerStyle}
+    >
+      <div className="relative h-full w-full">
+        <div ref={mapContainerRef} className={cn(className, "h-full w-full")} />
+        <MapLoader isLoading={isCombinedLoading} />
+        {hasApiKeyError && <MapError onRetry={handleRetryApiKey} />}
+      </div>
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[5] flex items-center gap-1">
+        <MapSearchInput
+          placeholder="Buscar talhão..."
+          onSearch={handleSearch}
+          onCycle={handleCycle}
+          value={currentSearchQuery}
+        />
         <MapDrawingControls
           onSave={handleSave}
-          onLoad={handleLoad}
           onClear={handleClear}
           selectedColor={selectedColor}
           onColorChange={handleColorChange}
           disabled={!isMapReady}
+          hasUnsavedChanges={hasUnsavedChanges}
         />
       </div>
       <MapBoundarySelector
         value={selectedBoundary}
         onValueChange={handleBoundaryChange}
-        allowedBoundaries={allowedBoundaries}
-        className="absolute top-4 right-4 z-1000"
+        allowedBoundaries={detectedBoundaries}
+        className="absolute top-4 right-4 z-[5]"
       />
     </div>
   );

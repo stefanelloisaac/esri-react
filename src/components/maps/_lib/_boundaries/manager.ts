@@ -39,6 +39,8 @@ export class BoundaryManager {
 
     this.currentBoundary = boundary;
 
+    this.map.setMinZoom(boundary.minZoom);
+
     if (animate) {
       this.map.flyTo(boundary.center, boundary.defaultZoom, {
         duration: 1,

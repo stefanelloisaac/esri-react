@@ -3,20 +3,11 @@ import "leaflet-draw";
 import {
   createPolygonPopup,
   createCirclePopup,
-  createMarkerPopup,
   createPointRow,
 } from "./templates";
 import { DEFAULT_DRAW_COLOR, getShapeOptions, type DrawColor } from "./colors";
 import { MapDrawControlOptions } from "../../_types";
-
-delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })
-  ._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-});
+import { rgbNumberToHex } from "@/utils/rgbNumberToHex";
 
 (L as unknown as { drawLocal: typeof L.drawLocal }).drawLocal = {
   draw: {
@@ -34,31 +25,15 @@ L.Icon.Default.mergeOptions({
         text: "Apagar último ponto",
       },
       buttons: {
-        polyline: "Desenhar uma polilinha",
         polygon: "Desenhar um polígono",
+        polyline: "",
         rectangle: "Desenhar um retângulo",
         circle: "Desenhar um círculo",
-        marker: "Adicionar um marcador",
-        circlemarker: "Desenhar um marcador circular",
+        marker: "",
+        circlemarker: "",
       },
     },
     handlers: {
-      circle: {
-        tooltip: {
-          start: "Clique e arraste para desenhar um círculo.",
-        },
-        radius: "Raio",
-      },
-      circlemarker: {
-        tooltip: {
-          start: "Clique no mapa para posicionar o marcador circular.",
-        },
-      },
-      marker: {
-        tooltip: {
-          start: "Clique no mapa para posicionar o marcador.",
-        },
-      },
       polygon: {
         tooltip: {
           start: "Clique para começar a desenhar.",
@@ -67,16 +42,32 @@ L.Icon.Default.mergeOptions({
         },
       },
       polyline: {
-        error: "<strong>Erro:</strong> as bordas não podem se cruzar!",
+        error: "",
         tooltip: {
-          start: "Clique para começar a desenhar.",
-          cont: "Clique para continuar desenhando.",
-          end: "Clique no último ponto para finalizar.",
+          start: "",
+          cont: "",
+          end: "",
         },
       },
       rectangle: {
         tooltip: {
           start: "Clique e arraste para desenhar um retângulo.",
+        },
+      },
+      circle: {
+        tooltip: {
+          start: "Clique e arraste para desenhar um círculo.",
+        },
+        radius: "Raio",
+      },
+      marker: {
+        tooltip: {
+          start: "",
+        },
+      },
+      circlemarker: {
+        tooltip: {
+          start: "",
         },
       },
       simpleshape: {
@@ -132,6 +123,7 @@ export class MapDrawManager {
   private options: MapDrawControlOptions;
   private currentColor: DrawColor;
   private drawingCounter: number;
+  private initialLayerIds: Set<number>;
 
   constructor(map: L.Map, options: MapDrawControlOptions = {}) {
     this.map = map;
@@ -139,6 +131,7 @@ export class MapDrawManager {
     this.drawnItems = new L.FeatureGroup();
     this.currentColor = DEFAULT_DRAW_COLOR;
     this.drawingCounter = 1;
+    this.initialLayerIds = new Set<number>();
     this.drawControl = this.createDrawControl();
     this.initialize();
   }
@@ -156,7 +149,7 @@ export class MapDrawManager {
         polyline: false,
         rectangle: { shapeOptions },
         circle: { shapeOptions },
-        marker: {},
+        marker: false,
         circlemarker: false,
       },
     });
@@ -175,10 +168,6 @@ export class MapDrawManager {
     } catch (e) {
       console.error("Error adding draw control:", e);
     }
-  }
-
-  public getCurrentColor(): DrawColor {
-    return this.currentColor;
   }
 
   private generateDrawingName(): string {
@@ -213,7 +202,8 @@ export class MapDrawManager {
         geoJSONLayer.feature.properties = {};
       }
       geoJSONLayer.feature.properties.drawColor = this.currentColor;
-      geoJSONLayer.feature.properties.name = this.generateDrawingName();
+      geoJSONLayer.feature.properties.descricaotalhao =
+        this.generateDrawingName();
 
       this.applyColorToLayer(layer, this.currentColor);
 
@@ -255,7 +245,18 @@ export class MapDrawManager {
   }
 
   public clearAll(): void {
-    this.drawnItems.clearLayers();
+    const layersToRemove: L.Layer[] = [];
+
+    this.drawnItems.eachLayer((layer: L.Layer) => {
+      const layerId = L.Util.stamp(layer);
+      if (!this.initialLayerIds.has(layerId)) {
+        layersToRemove.push(layer);
+      }
+    });
+
+    layersToRemove.forEach((layer) => {
+      this.drawnItems.removeLayer(layer);
+    });
   }
 
   public destroy(): void {
@@ -294,10 +295,10 @@ export class MapDrawManager {
         };
       }
 
-      if (geoJSONLayer.feature?.properties?.name) {
+      if (geoJSONLayer.feature?.properties?.descricaotalhao) {
         feature.properties = {
           ...feature.properties,
-          name: geoJSONLayer.feature.properties.name,
+          descricaotalhao: geoJSONLayer.feature.properties.descricaotalhao,
         };
       }
 
@@ -310,13 +311,21 @@ export class MapDrawManager {
     };
   }
 
-  public importGeoJSON(geoJSON: GeoJSON.FeatureCollection): void {
-    this.clearAll();
+  public importGeoJSON(
+    geoJSON: GeoJSON.FeatureCollection,
+    isInitialData: boolean = false,
+  ): void {
+    if (isInitialData) {
+      this.drawnItems.clearLayers();
+      this.initialLayerIds.clear();
+    } else {
+      this.clearAll();
+    }
 
     let maxCounter = 0;
     geoJSON.features.forEach((feature) => {
-      if (feature.properties?.name) {
-        const match = feature.properties.name.match(/^(\d+)/);
+      if (feature.properties?.descricaotalhao) {
+        const match = feature.properties.descricaotalhao.match(/^(\d+)/);
         if (match) {
           const num = parseInt(match[1], 10);
           if (num > maxCounter) {
@@ -328,6 +337,8 @@ export class MapDrawManager {
     this.drawingCounter = maxCounter + 1;
 
     geoJSON.features.forEach((feature) => {
+      const drawColor = this.getOrCreateDrawColor(feature);
+
       if (feature.properties?.layerType === "circle") {
         const center = feature.properties.center as [number, number];
         const radius = feature.properties.radius as number;
@@ -336,11 +347,21 @@ export class MapDrawManager {
         const geoJSONLayer = circle as L.Layer & { feature?: GeoJSON.Feature };
         geoJSONLayer.feature = feature;
 
-        if (feature.properties?.drawColor) {
-          this.applyColorToLayer(circle, feature.properties.drawColor);
+        if (drawColor) {
+          geoJSONLayer.feature.properties = {
+            ...geoJSONLayer.feature.properties,
+            drawColor,
+          };
+          this.applyColorToLayer(circle, drawColor);
         }
 
         this.drawnItems.addLayer(circle);
+
+        if (isInitialData) {
+          const layerId = L.Util.stamp(circle);
+          this.initialLayerIds.add(layerId);
+        }
+
         this.bindPopupToLayer(circle, "circle");
       } else {
         L.geoJSON(feature, {
@@ -350,17 +371,45 @@ export class MapDrawManager {
             };
             geoJSONLayer.feature = feature;
 
-            if (feature.properties?.drawColor) {
-              this.applyColorToLayer(layer, feature.properties.drawColor);
+            if (drawColor) {
+              geoJSONLayer.feature.properties = {
+                ...geoJSONLayer.feature.properties,
+                drawColor,
+              };
+              this.applyColorToLayer(layer, drawColor);
             }
 
             const layerType = this.getLayerType(layer);
             this.bindPopupToLayer(layer, layerType);
             this.drawnItems.addLayer(layer);
+
+            if (isInitialData) {
+              const layerId = L.Util.stamp(layer);
+              this.initialLayerIds.add(layerId);
+            }
           },
         });
       }
     });
+  }
+
+  private getOrCreateDrawColor(feature: GeoJSON.Feature): DrawColor | null {
+    if (feature.properties?.drawColor) {
+      return feature.properties.drawColor;
+    }
+
+    if (feature.properties?.corbordatalhao !== undefined) {
+      const borderHex = rgbNumberToHex(feature.properties.corbordatalhao);
+
+      return {
+        id: "talhao-color",
+        name: "Cor do Talhão",
+        hex: borderHex,
+        fillOpacity: 0.25,
+      };
+    }
+
+    return null;
   }
 
   private applyColorToLayer(layer: L.Layer, color: DrawColor): void {
@@ -385,10 +434,8 @@ export class MapDrawManager {
 
   private getLayerType(layer: L.Layer): string {
     if (layer instanceof L.Circle) return "circle";
-    if (layer instanceof L.Marker) return "marker";
     if (layer instanceof L.Rectangle) return "rectangle";
     if (layer instanceof L.Polygon) return "polygon";
-    if (layer instanceof L.Polyline) return "polyline";
     return "unknown";
   }
 
@@ -426,7 +473,7 @@ export class MapDrawManager {
   private formatPointsTable(points: L.LatLng[]): string {
     return points
       .map((point, index) =>
-        createPointRow(index + 1, point.lat.toFixed(6), point.lng.toFixed(6))
+        createPointRow(index + 1, point.lat.toFixed(6), point.lng.toFixed(6)),
       )
       .join("");
   }
@@ -434,7 +481,7 @@ export class MapDrawManager {
   private bindPopupToLayer(layer: L.Layer, layerType: string): void {
     let popupContent = "";
     const geoJSONLayer = layer as L.Layer & { feature?: GeoJSON.Feature };
-    const name = geoJSONLayer.feature?.properties?.name;
+    const name = geoJSONLayer.feature?.properties?.descricaotalhao;
 
     if (layerType === "polygon" || layerType === "rectangle") {
       const polygonLayer = layer as L.Polygon;
@@ -460,15 +507,6 @@ export class MapDrawManager {
         area: this.formatArea(area),
         centerLat: center.lat.toFixed(4),
         centerLng: center.lng.toFixed(4),
-      });
-    } else if (layerType === "marker") {
-      const markerLayer = layer as L.Marker;
-      const position = markerLayer.getLatLng();
-
-      popupContent = createMarkerPopup({
-        name,
-        lat: position.lat.toFixed(6),
-        lng: position.lng.toFixed(6),
       });
     }
 

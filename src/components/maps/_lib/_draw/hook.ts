@@ -6,7 +6,7 @@ import { MapDrawControlOptions } from "../../_types";
 export function useMapDraw(
   mapRef: React.RefObject<L.Map | null>,
   isInitializedRef: React.RefObject<boolean>,
-  callbacksRef: React.RefObject<MapDrawControlOptions>
+  callbacksRef: React.RefObject<MapDrawControlOptions>,
 ) {
   const drawManagerRef = useRef<MapDrawManager | null>(null);
 

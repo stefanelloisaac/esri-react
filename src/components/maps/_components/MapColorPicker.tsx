@@ -35,19 +35,18 @@ export function MapColorPicker({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          size="icon-sm"
+          size="sm"
           disabled={disabled}
           title="Selecionar cor de desenho"
-          className={cn("hover:bg-accent/50 h-7 w-7 relative", className)}
+          className={cn(
+            "hover:bg-blue-600/10 hover:text-blue-600 h-7 flex-1 relative",
+            className,
+          )}
         >
           <Palette className="h-4 w-4" />
-          <div
-            className="absolute bottom-0.5 right-0.5 w-2 h-2 rounded-full border border-background"
-            style={{ backgroundColor: selectedColor.hex }}
-          />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-fit p-2 z-1001 -ml-1" align="start">
+      <PopoverContent className="w-fit p-2 -ml-1" align="start">
         <HexColorPicker color={color} onChange={handleColorChange} />
       </PopoverContent>
     </Popover>

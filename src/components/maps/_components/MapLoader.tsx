@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import type { MapLoaderProps } from "../_types";
+import { MapLoading } from "./MapLoading";
 
 export function MapLoader({
   isLoading,
@@ -44,28 +45,14 @@ export function MapLoader({
   return (
     <div
       className={cn(
-        "absolute inset-0 z-999 flex items-center justify-center",
-        "bg-neutral-900/80",
+        "absolute inset-0 z-[1]",
         "transition-opacity duration-300 ease-out",
         isActive ? "opacity-100" : "opacity-0 pointer-events-none",
-        className
+        className,
       )}
       aria-hidden={!isActive}
     >
-      <div
-        className={cn(
-          "flex flex-col items-center gap-3 px-8 py-5 rounded-2xl",
-          "bg-card/95 shadow-xl border border-border/40",
-          "transition-all duration-700 ease-out",
-          isActive
-            ? "scale-100 opacity-100 translate-y-0"
-            : "scale-90 opacity-0 translate-y-2"
-        )}
-      >
-        <span className="text-sm text-muted-foreground">
-          Carregando mapa...
-        </span>
-      </div>
+      <MapLoading />
     </div>
   );
 }

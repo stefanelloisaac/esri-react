@@ -10,6 +10,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-9.1285, -70.3055],
     defaultZoom: 7,
+    minZoom: 7,
   },
   al: {
     id: "al",
@@ -20,6 +21,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-9.657, -36.6949],
     defaultZoom: 8,
+    minZoom: 8,
   },
   ap: {
     id: "ap",
@@ -30,6 +32,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [1.6007, -52.3746],
     defaultZoom: 7,
+    minZoom: 7,
   },
   am: {
     id: "am",
@@ -40,6 +43,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-3.7857, -64.9495],
     defaultZoom: 7,
+    minZoom: 7,
   },
   ba: {
     id: "ba",
@@ -50,6 +54,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-13.4406, -41.9827],
     defaultZoom: 7,
+    minZoom: 7,
   },
   ce: {
     id: "ce",
@@ -60,6 +65,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-5.3212, -39.3381],
     defaultZoom: 7,
+    minZoom: 7,
   },
   df: {
     id: "df",
@@ -70,6 +76,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-15.776, -47.7977],
     defaultZoom: 9,
+    minZoom: 9,
   },
   es: {
     id: "es",
@@ -80,6 +87,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-19.5968, -40.7718],
     defaultZoom: 8,
+    minZoom: 8,
   },
   go: {
     id: "go",
@@ -90,6 +98,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-15.9473, -49.5778],
     defaultZoom: 7,
+    minZoom: 7,
   },
   ma: {
     id: "ma",
@@ -100,6 +109,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-5.6534, -45.2757],
     defaultZoom: 7,
+    minZoom: 7,
   },
   mt: {
     id: "mt",
@@ -110,6 +120,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-12.6953, -55.9289],
     defaultZoom: 7,
+    minZoom: 7,
   },
   ms: {
     id: "ms",
@@ -120,6 +131,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-20.6177, -54.545],
     defaultZoom: 7,
+    minZoom: 7,
   },
   mg: {
     id: "mg",
@@ -130,6 +142,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-18.5779, -45.4514],
     defaultZoom: 7,
+    minZoom: 7,
   },
   pa: {
     id: "pa",
@@ -140,6 +153,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-3.6251, -52.4796],
     defaultZoom: 7,
+    minZoom: 7,
   },
   pb: {
     id: "pb",
@@ -150,6 +164,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-7.1644, -36.7793],
     defaultZoom: 8,
+    minZoom: 8,
   },
   pr: {
     id: "pr",
@@ -160,6 +175,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-24.6167, -51.3214],
     defaultZoom: 7,
+    minZoom: 7,
   },
   pe: {
     id: "pe",
@@ -170,6 +186,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-8.3727, -38.0757],
     defaultZoom: 7,
+    minZoom: 7,
   },
   pi: {
     id: "pi",
@@ -180,6 +197,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-6.838, -43.1823],
     defaultZoom: 7,
+    minZoom: 7,
   },
   rj: {
     id: "rj",
@@ -190,6 +208,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-22.066, -42.9254],
     defaultZoom: 8,
+    minZoom: 8,
   },
   rn: {
     id: "rn",
@@ -200,6 +219,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-5.9072, -36.7752],
     defaultZoom: 8,
+    minZoom: 8,
   },
   rs: {
     id: "rs",
@@ -210,6 +230,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-30.4167, -53.6706],
     defaultZoom: 7,
+    minZoom: 7,
   },
   ro: {
     id: "ro",
@@ -220,6 +241,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-10.8315, -63.2922],
     defaultZoom: 7,
+    minZoom: 7,
   },
   rr: {
     id: "rr",
@@ -230,6 +252,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [1.8456, -61.8557],
     defaultZoom: 7,
+    minZoom: 7,
   },
   sc: {
     id: "sc",
@@ -240,6 +263,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-27.6535, -51.0927],
     defaultZoom: 7,
+    minZoom: 7,
   },
   sp: {
     id: "sp",
@@ -250,6 +274,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-22.5502, -48.6357],
     defaultZoom: 7,
+    minZoom: 7,
   },
   se: {
     id: "se",
@@ -260,6 +285,7 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-10.5417, -37.3317],
     defaultZoom: 9,
+    minZoom: 9,
   },
   to: {
     id: "to",
@@ -270,11 +296,12 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     ],
     center: [-9.318, -48.2202],
     defaultZoom: 7,
+    minZoom: 7,
   },
 };
 
 export const getBoundaryById = (
-  id: string
+  id: string,
 ): MapBoundaryDefinition | undefined => {
   return BOUNDARIES[id];
 };

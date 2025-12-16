@@ -35,7 +35,7 @@ export function MapBoundarySelector({
   return (
     <div className={cn(className)}>
       <Select value={value} onValueChange={onValueChange} key={value}>
-        <SelectTrigger className="w-[200px] bg-background/85! text-foreground! shadow-md border">
+        <SelectTrigger className="w-[200px] h-9 bg-background/95 backdrop-blur-sm text-foreground shadow-md border border-input">
           <SelectValue placeholder="Selecione um estado" />
         </SelectTrigger>
         <SelectContent position="popper" sideOffset={5} className="z-1001">

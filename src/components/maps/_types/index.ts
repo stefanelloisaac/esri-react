@@ -11,6 +11,7 @@ export interface MapBoundaryDefinition {
   bounds: MapLatLngBounds;
   center: MapLatLng;
   defaultZoom: number;
+  minZoom: number;
   geoJsonPath?: string;
 }
 
@@ -29,19 +30,18 @@ export interface MapDrawControlOptions {
   onShapeCreated?: (
     layerType: string,
     layer: L.Layer,
-    geoJSON: GeoJSON.Feature
+    geoJSON: GeoJSON.Feature,
   ) => void;
   onShapeEdited?: (layers: L.LayerGroup) => void;
   onShapeDeleted?: (layers: L.LayerGroup) => void;
 }
 
 export interface MapProps extends MapDrawControlOptions {
+  data?: GeoJSON.FeatureCollection;
+  searchField?: string;
   height?: string;
-  center?: MapLatLng;
-  zoom?: number;
   className?: string;
-  allowedBoundaries?: string[];
-  onDrawingsExport?: (geoJSON: GeoJSON.FeatureCollection) => void;
+  onSave?: (geoJSON: GeoJSON.FeatureCollection) => void;
 }
 
 export interface MapBoundarySelectorProps {
@@ -54,6 +54,11 @@ export interface MapBoundarySelectorProps {
 export interface MapLoaderProps {
   isLoading: boolean;
   hideDelay?: number;
+  className?: string;
+}
+
+export interface MapErrorProps {
+  onRetry: () => void;
   className?: string;
 }
 
@@ -80,16 +85,25 @@ export interface MapColorPickerProps {
 
 export interface MapDrawingControlsProps {
   onSave?: () => void;
-  onLoad?: () => void;
   onClear?: () => void;
   selectedColor?: DrawColor;
   onColorChange?: (color: DrawColor) => void;
   className?: string;
   disabled?: boolean;
+  hasUnsavedChanges?: boolean;
 }
 
 export interface MapSearchInputProps {
   onSearch?: (query: string) => void;
+  onCycle?: () => void;
   placeholder?: string;
+  className?: string;
+  value?: string;
+}
+
+export interface MapShapePreviewProps {
+  geoJSON: GeoJSON.Feature;
+  width?: number;
+  height?: number;
   className?: string;
 }

@@ -14,14 +14,9 @@ export interface CirclePopupData {
   centerLng: string;
 }
 
-export interface MarkerPopupData {
-  name?: string;
-  lat: string;
-  lng: string;
-}
-
 const styles = {
-  container: "min-width: 220px; max-height: 300px; overflow-y: auto;",
+  container:
+    "min-width: 220px; max-height: 300px; overflow-y: auto; scrollbar-width: thin;",
   containerSmall: "min-width: 200px;",
   title: "font-size: 12px;",
   hr: "margin: 8px 0; border: none; border-top: 1px solid currentColor; opacity: 0.2;",
@@ -33,9 +28,11 @@ const styles = {
 };
 
 export function createPolygonPopup(data: PolygonPopupData): string {
+  const displayName = data.name || "Informações da Área";
+
   return `
     <div style="${styles.container}">
-      <strong style="${styles.title}">${data.name || "Informações da Área"}</strong>
+      <strong style="${styles.title}">${displayName}</strong>
       <hr style="${styles.hr}">
       <table style="${styles.table}">
         <tr>
@@ -87,33 +84,10 @@ export function createCirclePopup(data: CirclePopupData): string {
   `;
 }
 
-export function createMarkerPopup(data: MarkerPopupData): string {
-  return `
-    <div style="${styles.containerSmall}">
-      <strong style="${styles.title}">${data.name || "Informações do Marcador"}</strong>
-      <hr style="${styles.hr}">
-      <table style="${styles.table}">
-        <tr>
-          <td style="${styles.label}">Tipo:</td>
-          <td style="${styles.value}">Marcador</td>
-        </tr>
-        <tr>
-          <td style="${styles.label}">Latitude:</td>
-          <td style="${styles.value}">${data.lat}</td>
-        </tr>
-        <tr>
-          <td style="${styles.label}">Longitude:</td>
-          <td style="${styles.value}">${data.lng}</td>
-        </tr>
-      </table>
-    </div>
-  `;
-}
-
 export function createPointRow(
   index: number,
   lat: string,
-  lng: string
+  lng: string,
 ): string {
   return `
     <tr>

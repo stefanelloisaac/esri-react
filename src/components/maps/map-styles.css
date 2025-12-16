@@ -1,0 +1,100 @@
+/* dark mode dos controles */
+.dark .leaflet-control-zoom {
+  background-color: rgb(var(--popover)) !important;
+}
+
+.dark .leaflet-control-zoom a {
+  filter: invert(1);
+}
+
+.dark .leaflet-draw-section {
+  background-color: rgb(var(--popover)) !important;
+}
+
+.dark .leaflet-draw-actions a {
+  background-color: rgb(var(--popover)) !important;
+}
+
+.dark .leaflet-draw-toolbar a {
+  filter: invert(1);
+}
+
+/* estilos dos popups */
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: white !important;
+  color: black !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border: 1px solid #ccc !important;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark .leaflet-popup-content-wrapper,
+.dark .leaflet-popup-tip {
+  background-color: rgb(var(--popover)) !important;
+  color: rgb(var(--popover-foreground)) !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  border: 1px solid rgba(var(--popover-foreground), 0.2) !important;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark .leaflet-control-attribution {
+  background-color: rgb(var(--popover)) !important;
+  color: rgb(var(--foreground));
+}
+
+/* controle de z-index */
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+.leaflet-pane {
+  z-index: auto !important;
+}
+
+.leaflet-tile-pane {
+  z-index: 2 !important;
+}
+
+.leaflet-overlay-pane {
+  z-index: 4 !important;
+}
+
+.leaflet-shadow-pane {
+  z-index: 5 !important;
+}
+
+.leaflet-marker-pane {
+  z-index: 6 !important;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 999 !important;
+}
+
+.leaflet-popup-pane {
+  z-index: 700 !important;
+}
+
+.leaflet-map-pane {
+  z-index: 1 !important;
+}
+
+.leaflet-control {
+  z-index: 5 !important;
+}
+
+/* esconde o botão de "Limpar tudo" apenas no modo de remoção */
+.leaflet-draw > div:nth-child(2) ul > li:nth-child(3) {
+  display: none !important;
+}
+
+/* arredonda o botão "Cancelar" no canto direito quando o último está escondido */
+.leaflet-draw > div:nth-child(2) ul > li:nth-child(2) a {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+}

@@ -7,7 +7,7 @@ import { UseMapBoundaryManagerOptions } from "../../_types";
 export function useBoundaryManager(
   mapRef: React.RefObject<L.Map | null>,
   isInitializedRef: React.RefObject<boolean>,
-  options: UseMapBoundaryManagerOptions
+  options: UseMapBoundaryManagerOptions,
 ) {
   const boundaryManagerRef = useRef<BoundaryManager | null>(null);
   const optionsRef = useRef(options);

@@ -6,3 +6,7 @@ export {
   getAllBoundaryIds,
   getBoundaryNames,
 } from "./data";
+export {
+  detectBoundariesFromGeoJSON,
+  detectBoundaryFromCoordinates,
+} from "./detector";
