@@ -32,6 +32,7 @@ export default function Map({
   onShapeEdited,
   onShapeDeleted,
   onSave,
+  allowedStates = [],
 }: MapProps) {
   // MARK: - Refs
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -47,7 +48,16 @@ export default function Map({
   const [currentSearchQuery, setCurrentSearchQuery] = useState('')
 
   // MARK: - Detecção de Limites
-  const detectedBoundaries = useMemo(() => detectBoundariesFromGeoJSON(data), [data])
+  const detectedBoundariesFromData = useMemo(() => detectBoundariesFromGeoJSON(data), [data])
+
+  // Combina boundaries detectados do GeoJSON com estados permitidos manualmente
+  const detectedBoundaries = useMemo(() => {
+    const combined = new Set<string>()
+    detectedBoundariesFromData.forEach((id) => combined.add(id))
+    allowedStates.forEach((id) => combined.add(id.toLowerCase()))
+    return Array.from(combined)
+  }, [detectedBoundariesFromData, allowedStates])
+
   const defaultBoundary = detectedBoundaries?.[0]
   const [selectedBoundary, setSelectedBoundary] = useState<string | undefined>(defaultBoundary)
 
@@ -290,9 +300,9 @@ export default function Map({
         <div ref={mapContainerRef} className={cn(className, 'h-full w-full')} />
         <MapLoader isLoading={isCombinedLoading} />
       </div>
-      <div className='absolute top-4 left-1/2 z-5 flex -translate-x-1/2 items-center gap-1'>
+      <div className='absolute top-4 left-1/2 z-5 flex -translate-x-1/2 items-center gap-1.5'>
         <MapSearchInput
-          placeholder='Buscar talhão...'
+          placeholder='Localizar'
           onSearch={handleSearch}
           onCycle={handleCycle}
           value={currentSearchQuery}

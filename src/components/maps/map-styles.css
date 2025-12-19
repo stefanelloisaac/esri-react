@@ -1,6 +1,6 @@
 /* dark mode dos controles */
 .dark .leaflet-control-zoom {
-  background-color: rgb(var(--popover)) !important;
+  background-color: var(--popover) !important;
 }
 
 .dark .leaflet-control-zoom a {
@@ -8,11 +8,11 @@
 }
 
 .dark .leaflet-draw-section {
-  background-color: rgb(var(--popover)) !important;
+  background-color: var(--popover) !important;
 }
 
 .dark .leaflet-draw-actions a {
-  background-color: rgb(var(--popover)) !important;
+  background-color: var(--popover) !important;
 }
 
 .dark .leaflet-draw-toolbar a {
@@ -33,18 +33,18 @@
 
 .dark .leaflet-popup-content-wrapper,
 .dark .leaflet-popup-tip {
-  background-color: rgb(var(--popover)) !important;
-  color: rgb(var(--popover-foreground)) !important;
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
 }
 
 .dark .leaflet-popup-content-wrapper {
-  border: 1px solid rgba(var(--popover-foreground), 0.2) !important;
+  border: 1px solid color-mix(in srgb, var(--popover-foreground) 20%, transparent) !important;
   box-shadow: 0 3px 14px rgba(0, 0, 0, 0.6) !important;
 }
 
 .dark .leaflet-control-attribution {
-  background-color: rgb(var(--popover)) !important;
-  color: rgb(var(--foreground));
+  background-color: var(--popover) !important;
+  color: var(--foreground);
 }
 
 /* controle de z-index */

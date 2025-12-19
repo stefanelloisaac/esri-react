@@ -37,7 +37,7 @@ export function MapSearchInput({
 
   return (
     <div className={cn('relative w-[400px]', className)}>
-      <div className='relative flex h-9 items-center rounded-md border border-input bg-background/95 shadow-md backdrop-blur-sm transition-colors focus-within:border-primary'>
+      <div className='relative flex h-9 items-center rounded-md border border-input bg-background/95 shadow-md ring-2 ring-primary backdrop-blur-sm transition-colors focus-within:border-primary'>
         <input
           type='text'
           placeholder={placeholder}

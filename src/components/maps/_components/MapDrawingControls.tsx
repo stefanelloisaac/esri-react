@@ -18,7 +18,7 @@ export function MapDrawingControls({
   return (
     <div
       className={cn(
-        'flex h-9 items-center gap-1 rounded-md border border-input bg-background/95 px-1 shadow-md backdrop-blur-sm',
+        'flex h-9 items-center gap-0.5 rounded-md border border-input bg-background/95 px-1 shadow-md ring-2 ring-primary backdrop-blur-sm',
         className,
       )}
     >

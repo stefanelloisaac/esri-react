@@ -10,7 +10,7 @@ const Map = dynamic(() => import('@/components/maps/Map'), {
 export default function Home() {
   return (
     <main className='h-screen w-screen'>
-      <Map height='100%' />
+      <Map height='100%' allowedStates={['rs', 'SC']} />
     </main>
   )
 }

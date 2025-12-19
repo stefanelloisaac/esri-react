@@ -37,6 +37,7 @@ export interface MapProps extends MapDrawControlOptions {
   height?: string
   className?: string
   onSave?: (geoJSON: GeoJSON.FeatureCollection) => void
+  allowedStates?: string[]
 }
 
 export interface MapBoundarySelectorProps {
