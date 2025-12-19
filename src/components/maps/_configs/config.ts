@@ -1,7 +1,7 @@
 export const BRAZIL_BOUNDS: [[number, number], [number, number]] = [
   [-34.0, -74.0],
   [5.5, -32.0],
-];
+]
 
 export const MAP_CONFIG = {
   MIN_ZOOM: 5,
@@ -11,6 +11,6 @@ export const MAP_CONFIG = {
   ZOOM_SNAP: 0.5,
   ZOOM_DELTA: 0.5,
   MAX_BOUNDS_VISCOSITY: 1.0,
-} as const;
+} as const
 
-export const BASEMAP_STYLE = "arcgis/imagery" as const;
+export const BASEMAP_STYLE = 'arcgis/imagery' as const

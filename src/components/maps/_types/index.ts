@@ -1,109 +1,104 @@
-import type L from "leaflet";
-import { DrawColor } from "../_lib/_draw/colors";
+import type L from 'leaflet'
+import { DrawColor } from '../_lib/_draw/colors'
 
-export type MapLatLng = [number, number];
+export type MapLatLng = [number, number]
 
-export type MapLatLngBounds = [MapLatLng, MapLatLng];
+export type MapLatLngBounds = [MapLatLng, MapLatLng]
 
 export interface MapBoundaryDefinition {
-  id: string;
-  name: string;
-  bounds: MapLatLngBounds;
-  center: MapLatLng;
-  defaultZoom: number;
-  minZoom: number;
-  geoJsonPath?: string;
+  id: string
+  name: string
+  bounds: MapLatLngBounds
+  center: MapLatLng
+  defaultZoom: number
+  minZoom: number
+  geoJsonPath?: string
 }
 
 export interface MapBoundaryManagerOptions {
-  onBoundaryChanged?: (boundaryId: string) => void;
-  onLoadingStart?: () => void;
-  onTilesLoaded?: () => void;
+  onBoundaryChanged?: (boundaryId: string) => void
+  onLoadingStart?: () => void
+  onTilesLoaded?: () => void
 }
 
-export interface UseMapBoundaryManagerOptions
-  extends MapBoundaryManagerOptions {
-  selectedBoundary?: string;
+export interface UseMapBoundaryManagerOptions extends MapBoundaryManagerOptions {
+  selectedBoundary?: string
 }
 
 export interface MapDrawControlOptions {
-  onShapeCreated?: (
-    layerType: string,
-    layer: L.Layer,
-    geoJSON: GeoJSON.Feature,
-  ) => void;
-  onShapeEdited?: (layers: L.LayerGroup) => void;
-  onShapeDeleted?: (layers: L.LayerGroup) => void;
+  onShapeCreated?: (layerType: string, layer: L.Layer, geoJSON: GeoJSON.Feature) => void
+  onShapeEdited?: (layers: L.LayerGroup) => void
+  onShapeDeleted?: (layers: L.LayerGroup) => void
 }
 
 export interface MapProps extends MapDrawControlOptions {
-  data?: GeoJSON.FeatureCollection;
-  searchField?: string;
-  height?: string;
-  className?: string;
-  onSave?: (geoJSON: GeoJSON.FeatureCollection) => void;
+  data?: GeoJSON.FeatureCollection
+  searchField?: string
+  height?: string
+  className?: string
+  onSave?: (geoJSON: GeoJSON.FeatureCollection) => void
 }
 
 export interface MapBoundarySelectorProps {
-  value?: string;
-  onValueChange?: (value: string) => void;
-  allowedBoundaries?: string[];
-  className?: string;
+  value?: string
+  onValueChange?: (value: string) => void
+  allowedBoundaries?: string[]
+  className?: string
 }
 
 export interface MapLoaderProps {
-  isLoading: boolean;
-  hideDelay?: number;
-  className?: string;
+  isLoading: boolean
+  hideDelay?: number
+  className?: string
 }
 
 export interface MapErrorProps {
-  onRetry: () => void;
-  className?: string;
+  onRetry: () => void
+  className?: string
 }
 
 export interface UseLeafletMapOptions {
-  mapOptions: L.MapOptions;
-  basemapStyle: string;
+  mapOptions: L.MapOptions
+  basemapStyle: string
   basemapOptions: {
-    apikey: string | undefined;
-    version: number;
-    language: string;
-    preserveDrawingBuffer: boolean;
-  };
-  initialCenter: MapLatLng;
-  initialZoom: number;
-  bounds?: L.LatLngBoundsExpression;
+    apikey: string | undefined
+    version: number
+    language: string
+    preserveDrawingBuffer: boolean
+  }
+  initialCenter: MapLatLng
+  initialZoom: number
+  bounds?: L.LatLngBoundsExpression
 }
 
 export interface MapColorPickerProps {
-  selectedColor: DrawColor;
-  onColorChange: (color: DrawColor) => void;
-  disabled?: boolean;
-  className?: string;
+  selectedColor: DrawColor
+  onColorChange: (color: DrawColor) => void
+  disabled?: boolean
+  className?: string
 }
 
 export interface MapDrawingControlsProps {
-  onSave?: () => void;
-  onClear?: () => void;
-  selectedColor?: DrawColor;
-  onColorChange?: (color: DrawColor) => void;
-  className?: string;
-  disabled?: boolean;
-  hasUnsavedChanges?: boolean;
+  onSave?: () => void
+  onClear?: () => void
+  selectedColor?: DrawColor
+  onColorChange?: (color: DrawColor) => void
+  className?: string
+  disabled?: boolean
+  hasUnsavedChanges?: boolean
 }
 
 export interface MapSearchInputProps {
-  onSearch?: (query: string) => void;
-  onCycle?: () => void;
-  placeholder?: string;
-  className?: string;
-  value?: string;
+  onSearch?: (query: string) => void
+  onCycle?: () => void
+  placeholder?: string
+  className?: string
+  value?: string
 }
 
 export interface MapShapePreviewProps {
-  geoJSON: GeoJSON.Feature;
-  width?: number;
-  height?: number;
-  className?: string;
+  geoJSON: GeoJSON.Feature
+  width?: number
+  height?: number
+  className?: string
 }

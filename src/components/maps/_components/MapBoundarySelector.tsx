@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { getBoundaryNames } from "../_lib/_boundaries";
-import { cn } from "@/lib/utils";
-import { MapBoundarySelectorProps } from "../_types";
+} from '@/components/ui/select'
+import { getBoundaryNames } from '../_lib/_boundaries'
+import { cn } from '@/lib/utils'
+import { MapBoundarySelectorProps } from '../_types'
 
 export function MapBoundarySelector({
   value,
@@ -18,27 +18,27 @@ export function MapBoundarySelector({
   allowedBoundaries,
   className,
 }: MapBoundarySelectorProps) {
-  const isMountedRef = useRef(false);
+  const isMountedRef = useRef(false)
 
   useEffect(() => {
-    isMountedRef.current = true;
+    isMountedRef.current = true
     return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
+      isMountedRef.current = false
+    }
+  }, [])
 
-  const allBoundaries = getBoundaryNames();
+  const allBoundaries = getBoundaryNames()
   const availableBoundaries = allowedBoundaries
     ? allBoundaries.filter((b) => allowedBoundaries.includes(b.id))
-    : allBoundaries;
+    : allBoundaries
 
   return (
     <div className={cn(className)}>
       <Select value={value} onValueChange={onValueChange} key={value}>
-        <SelectTrigger className="w-[200px] h-9 bg-background/95 backdrop-blur-sm text-foreground shadow-md border border-input">
-          <SelectValue placeholder="Selecione um estado" />
+        <SelectTrigger className='h-9 w-[200px] border border-input bg-background/95 text-foreground shadow-md backdrop-blur-sm'>
+          <SelectValue placeholder='Selecione um estado' />
         </SelectTrigger>
-        <SelectContent position="popper" sideOffset={5} className="z-1001">
+        <SelectContent position='popper' sideOffset={5} className='z-1001'>
           {availableBoundaries.map((boundary) => (
             <SelectItem key={boundary.id} value={boundary.id}>
               {boundary.name}
@@ -47,5 +47,5 @@ export function MapBoundarySelector({
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }

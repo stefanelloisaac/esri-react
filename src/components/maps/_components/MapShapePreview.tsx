@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import { cn } from "@/lib/utils";
-import type { MapShapePreviewProps } from "../_types";
-import { rgbNumberToHex } from "@/utils/rgbNumberToHex";
+import { useMemo } from 'react'
+import { cn } from '@/lib/utils'
+import type { MapShapePreviewProps } from '../_types'
+import { rgbNumberToHex } from '@/lib/rgbNumberToHex'
 
 export function MapShapePreview({
   geoJSON,
@@ -10,72 +10,72 @@ export function MapShapePreview({
   className,
 }: MapShapePreviewProps) {
   const { viewBox, path, color, fillOpacity } = useMemo(() => {
-    if (!geoJSON.geometry || geoJSON.geometry.type !== "Polygon") {
+    if (!geoJSON.geometry || geoJSON.geometry.type !== 'Polygon') {
       return {
         viewBox: `0 0 ${width} ${height}`,
-        path: "",
-        color: "#3b82f6",
+        path: '',
+        color: '#3b82f6',
         fillOpacity: 0.25,
-      };
+      }
     }
 
-    const coords = geoJSON.geometry.coordinates[0] as Array<[number, number]>;
+    const coords = geoJSON.geometry.coordinates[0] as Array<[number, number]>
     if (!coords || coords.length === 0) {
       return {
         viewBox: `0 0 ${width} ${height}`,
-        path: "",
-        color: "#3b82f6",
+        path: '',
+        color: '#3b82f6',
         fillOpacity: 0.25,
-      };
+      }
     }
 
     let minLng = Infinity,
-      maxLng = -Infinity;
+      maxLng = -Infinity
     let minLat = Infinity,
-      maxLat = -Infinity;
+      maxLat = -Infinity
 
     coords.forEach(([lng, lat]) => {
-      minLng = Math.min(minLng, lng);
-      maxLng = Math.max(maxLng, lng);
-      minLat = Math.min(minLat, lat);
-      maxLat = Math.max(maxLat, lat);
-    });
+      minLng = Math.min(minLng, lng)
+      maxLng = Math.max(maxLng, lng)
+      minLat = Math.min(minLat, lat)
+      maxLat = Math.max(maxLat, lat)
+    })
 
-    const lngRange = maxLng - minLng || 0.001;
-    const latRange = maxLat - minLat || 0.001;
-    const padding = 2;
-    const viewWidth = width - 2 * padding;
-    const viewHeight = height - 2 * padding;
+    const lngRange = maxLng - minLng || 0.001
+    const latRange = maxLat - minLat || 0.001
+    const padding = 2
+    const viewWidth = width - 2 * padding
+    const viewHeight = height - 2 * padding
 
-    const aspectRatio = lngRange / latRange;
+    const aspectRatio = lngRange / latRange
     let scale: number,
       offsetX = 0,
-      offsetY = 0;
+      offsetY = 0
 
     if (aspectRatio > viewWidth / viewHeight) {
-      scale = viewWidth / lngRange;
-      offsetY = (viewHeight - latRange * scale) / 2;
+      scale = viewWidth / lngRange
+      offsetY = (viewHeight - latRange * scale) / 2
     } else {
-      scale = viewHeight / latRange;
-      offsetX = (viewWidth - lngRange * scale) / 2;
+      scale = viewHeight / latRange
+      offsetX = (viewWidth - lngRange * scale) / 2
     }
 
     const pathData = coords
       .map(([lng, lat], i) => {
-        const x = (lng - minLng) * scale + padding + offsetX;
-        const y = viewHeight - (lat - minLat) * scale + padding - offsetY;
-        return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+        const x = (lng - minLng) * scale + padding + offsetX
+        const y = viewHeight - (lat - minLat) * scale + padding - offsetY
+        return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
       })
-      .join(" ");
+      .join(' ')
 
-    let pathColor = "#3b82f6";
-    let opacity = 0.25;
+    let pathColor = '#3b82f6'
+    let opacity = 0.25
 
     if (geoJSON.properties?.drawColor) {
-      pathColor = geoJSON.properties.drawColor.hex;
-      opacity = geoJSON.properties.drawColor.fillOpacity;
+      pathColor = geoJSON.properties.drawColor.hex
+      opacity = geoJSON.properties.drawColor.fillOpacity
     } else if (geoJSON.properties?.corbordatalhao !== undefined) {
-      pathColor = rgbNumberToHex(geoJSON.properties.corbordatalhao);
+      pathColor = rgbNumberToHex(geoJSON.properties.corbordatalhao)
     }
 
     return {
@@ -83,21 +83,18 @@ export function MapShapePreview({
       path: `${pathData} Z`,
       color: pathColor,
       fillOpacity: opacity,
-    };
-  }, [geoJSON, width, height]);
+    }
+  }, [geoJSON, width, height])
 
   if (!path) {
     return (
       <div
-        className={cn(
-          "flex items-center justify-center bg-muted/30 rounded",
-          className,
-        )}
+        className={cn('flex items-center justify-center rounded bg-muted/30', className)}
         style={{ width, height }}
       >
-        <span className="text-[8px] text-muted-foreground">-</span>
+        <span className='text-[8px] text-muted-foreground'>-</span>
       </div>
-    );
+    )
   }
 
   return (
@@ -105,7 +102,7 @@ export function MapShapePreview({
       width={width}
       height={height}
       viewBox={viewBox}
-      className={cn("select-none rounded", className)}
+      className={cn('rounded select-none', className)}
     >
       <path
         d={path}
@@ -113,9 +110,9 @@ export function MapShapePreview({
         strokeWidth={1.5}
         fill={color}
         fillOpacity={fillOpacity}
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
-  );
+  )
 }

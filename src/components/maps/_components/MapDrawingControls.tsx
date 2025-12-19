@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { Save, Trash2, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { MapColorPicker } from "./MapColorPicker";
-import { MapDrawingControlsProps } from "../_types";
+import { Button } from '@/components/ui/button'
+import { Save, Trash2, Check } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { MapColorPicker } from './MapColorPicker'
+import { MapDrawingControlsProps } from '../_types'
 
 export function MapDrawingControls({
   onSave,
@@ -18,7 +18,7 @@ export function MapDrawingControls({
   return (
     <div
       className={cn(
-        "flex items-center gap-1 h-9 shadow-md rounded-md border border-input bg-background/95 backdrop-blur-sm px-1",
+        'flex h-9 items-center gap-1 rounded-md border border-input bg-background/95 px-1 shadow-md backdrop-blur-sm',
         className,
       )}
     >
@@ -30,29 +30,29 @@ export function MapDrawingControls({
         />
       )}
       <Button
-        variant="ghost"
-        size="sm"
+        variant='ghost'
+        size='sm'
         onClick={onSave}
         disabled={disabled}
-        title="Salvar desenhos localmente"
+        title='Salvar desenhos localmente'
         className={cn(
-          "hover:bg-emerald-600/10 hover:text-emerald-600 h-7 flex-1 relative",
+          'relative h-7 flex-1 hover:bg-emerald-600/10 hover:text-emerald-600',
           hasUnsavedChanges &&
-            "text-amber-600 hover:text-amber-700 animate-pulse hover:bg-amber-600/10",
+            'animate-pulse text-amber-600 hover:bg-amber-600/10 hover:text-amber-700',
         )}
       >
-        <Save className="h-4 w-4" />
+        <Save className='h-4 w-4' />
       </Button>
       <Button
-        variant="ghost"
-        size="sm"
+        variant='ghost'
+        size='sm'
         onClick={onClear}
         disabled={disabled}
-        title="Limpar todos os desenhos"
-        className="hover:bg-destructive/10 hover:text-destructive h-7 flex-1"
+        title='Limpar todos os desenhos'
+        className='h-7 flex-1 hover:bg-destructive/10 hover:text-destructive'
       >
-        <Trash2 className="h-4 w-4" />
+        <Trash2 className='h-4 w-4' />
       </Button>
     </div>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-import { MapBoundaryDefinition } from "../../_types";
+import { MapBoundaryDefinition } from '../../_types'
 
 export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
   ac: {
-    id: "ac",
-    name: "Acre",
+    id: 'ac',
+    name: 'Acre',
     bounds: [
       [-11.1452, -73.9904],
       [-7.1118, -66.6206],
@@ -13,8 +13,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   al: {
-    id: "al",
-    name: "Alagoas",
+    id: 'al',
+    name: 'Alagoas',
     bounds: [
       [-10.5009, -38.2376],
       [-8.8131, -35.1522],
@@ -24,8 +24,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 8,
   },
   ap: {
-    id: "ap",
-    name: "Amapá",
+    id: 'ap',
+    name: 'Amapá',
     bounds: [
       [-1.2356, -54.8761],
       [4.4371, -49.8732],
@@ -35,8 +35,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   am: {
-    id: "am",
-    name: "Amazonas",
+    id: 'am',
+    name: 'Amazonas',
     bounds: [
       [-9.818, -73.8015],
       [2.2466, -56.0975],
@@ -46,8 +46,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   ba: {
-    id: "ba",
-    name: "Bahia",
+    id: 'ba',
+    name: 'Bahia',
     bounds: [
       [-18.3484, -46.6171],
       [-8.5328, -37.3484],
@@ -57,8 +57,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   ce: {
-    id: "ce",
-    name: "Ceará",
+    id: 'ce',
+    name: 'Ceará',
     bounds: [
       [-7.8582, -41.4233],
       [-2.7842, -37.253],
@@ -68,8 +68,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   df: {
-    id: "df",
-    name: "Distrito Federal",
+    id: 'df',
+    name: 'Distrito Federal',
     bounds: [
       [-16.0518, -48.2871],
       [-15.5002, -47.3082],
@@ -79,8 +79,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 9,
   },
   es: {
-    id: "es",
-    name: "Espírito Santo",
+    id: 'es',
+    name: 'Espírito Santo',
     bounds: [
       [-21.3018, -41.8797],
       [-17.8919, -39.6639],
@@ -90,8 +90,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 8,
   },
   go: {
-    id: "go",
-    name: "Goiás",
+    id: 'go',
+    name: 'Goiás',
     bounds: [
       [-19.4991, -53.2488],
       [-12.3956, -45.9069],
@@ -101,8 +101,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   ma: {
-    id: "ma",
-    name: "Maranhão",
+    id: 'ma',
+    name: 'Maranhão',
     bounds: [
       [-10.2618, -48.7551],
       [-1.045, -41.7963],
@@ -112,8 +112,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   mt: {
-    id: "mt",
-    name: "Mato Grosso",
+    id: 'mt',
+    name: 'Mato Grosso',
     bounds: [
       [-18.0416, -61.6331],
       [-7.349, -50.2248],
@@ -123,8 +123,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   ms: {
-    id: "ms",
-    name: "Mato Grosso do Sul",
+    id: 'ms',
+    name: 'Mato Grosso do Sul',
     bounds: [
       [-24.0689, -58.167],
       [-17.1666, -50.9231],
@@ -134,8 +134,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   mg: {
-    id: "mg",
-    name: "Minas Gerais",
+    id: 'mg',
+    name: 'Minas Gerais',
     bounds: [
       [-22.9227, -51.0461],
       [-14.2332, -39.8568],
@@ -145,8 +145,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   pa: {
-    id: "pa",
-    name: "Pará",
+    id: 'pa',
+    name: 'Pará',
     bounds: [
       [-9.8412, -58.8983],
       [2.591, -46.0609],
@@ -156,8 +156,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   pb: {
-    id: "pb",
-    name: "Paraíba",
+    id: 'pb',
+    name: 'Paraíba',
     bounds: [
       [-8.3029, -38.7656],
       [-6.0259, -34.7931],
@@ -167,8 +167,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 8,
   },
   pr: {
-    id: "pr",
-    name: "Paraná",
+    id: 'pr',
+    name: 'Paraná',
     bounds: [
       [-26.7171, -54.6193],
       [-22.5163, -48.0235],
@@ -178,8 +178,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   pe: {
-    id: "pe",
-    name: "Pernambuco",
+    id: 'pe',
+    name: 'Pernambuco',
     bounds: [
       [-9.4829, -41.3583],
       [-7.2625, -34.7931],
@@ -189,8 +189,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   pi: {
-    id: "pi",
-    name: "Piauí",
+    id: 'pi',
+    name: 'Piauí',
     bounds: [
       [-10.9287, -45.9942],
       [-2.7473, -40.3705],
@@ -200,8 +200,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   rj: {
-    id: "rj",
-    name: "Rio de Janeiro",
+    id: 'rj',
+    name: 'Rio de Janeiro',
     bounds: [
       [-23.3689, -44.894],
       [-20.7632, -40.9568],
@@ -211,8 +211,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 8,
   },
   rn: {
-    id: "rn",
-    name: "Rio Grande do Norte",
+    id: 'rn',
+    name: 'Rio Grande do Norte',
     bounds: [
       [-6.9827, -38.5818],
       [-4.8317, -34.9686],
@@ -222,8 +222,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 8,
   },
   rs: {
-    id: "rs",
-    name: "Rio Grande do Sul",
+    id: 'rs',
+    name: 'Rio Grande do Sul',
     bounds: [
       [-33.7511, -57.6497],
       [-27.0823, -49.6916],
@@ -233,8 +233,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   ro: {
-    id: "ro",
-    name: "Rondônia",
+    id: 'ro',
+    name: 'Rondônia',
     bounds: [
       [-13.6937, -66.8102],
       [-7.9693, -59.7743],
@@ -244,8 +244,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   rr: {
-    id: "rr",
-    name: "Roraima",
+    id: 'rr',
+    name: 'Roraima',
     bounds: [
       [-1.5806, -64.8252],
       [5.2718, -58.8863],
@@ -255,8 +255,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   sc: {
-    id: "sc",
-    name: "Santa Catarina",
+    id: 'sc',
+    name: 'Santa Catarina',
     bounds: [
       [-29.3514, -53.8366],
       [-25.9557, -48.3489],
@@ -266,8 +266,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   sp: {
-    id: "sp",
-    name: "São Paulo",
+    id: 'sp',
+    name: 'São Paulo',
     bounds: [
       [-25.3207, -53.1101],
       [-19.7797, -44.1614],
@@ -277,8 +277,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 7,
   },
   se: {
-    id: "se",
-    name: "Sergipe",
+    id: 'se',
+    name: 'Sergipe',
     bounds: [
       [-11.5685, -38.2458],
       [-9.515, -36.4177],
@@ -288,8 +288,8 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     minZoom: 9,
   },
   to: {
-    id: "to",
-    name: "Tocantins",
+    id: 'to',
+    name: 'Tocantins',
     bounds: [
       [-13.4677, -50.7421],
       [-5.1684, -45.6983],
@@ -298,21 +298,19 @@ export const BOUNDARIES: Record<string, MapBoundaryDefinition> = {
     defaultZoom: 7,
     minZoom: 7,
   },
-};
+}
 
-export const getBoundaryById = (
-  id: string,
-): MapBoundaryDefinition | undefined => {
-  return BOUNDARIES[id];
-};
+export const getBoundaryById = (id: string): MapBoundaryDefinition | undefined => {
+  return BOUNDARIES[id]
+}
 
 export const getAllBoundaryIds = (): string[] => {
-  return Object.keys(BOUNDARIES);
-};
+  return Object.keys(BOUNDARIES)
+}
 
 export const getBoundaryNames = (): Array<{ id: string; name: string }> => {
   return Object.entries(BOUNDARIES).map(([id, def]) => ({
     id,
     name: def.name,
-  }));
-};
+  }))
+}

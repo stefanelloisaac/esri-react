@@ -1,14 +1,9 @@
-import CSGlassLoader from "@/components/cs/CSGlassLoader/CSGlassLoader";
+import { Loader2 } from 'lucide-react'
 
 export function MapLoading() {
   return (
-    <div className="relative h-full w-full">
-      <CSGlassLoader
-        variant="full"
-        size="md"
-        message="Carregando mapa"
-        className="rounded-lg"
-      />
+    <div className='relative h-full w-full'>
+      <Loader2 className='animate-spin' />
     </div>
-  );
+  )
 }

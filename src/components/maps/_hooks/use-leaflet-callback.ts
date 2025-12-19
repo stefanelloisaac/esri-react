@@ -1,13 +1,13 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect } from 'react'
 
 export function useLeafletCallback<
-  T extends Record<string, ((...args: never[]) => unknown) | undefined>
+  T extends Record<string, ((...args: never[]) => unknown) | undefined>,
 >(callbacks: T): React.RefObject<T> {
-  const callbacksRef = useRef<T>(callbacks);
+  const callbacksRef = useRef<T>(callbacks)
 
   useLayoutEffect(() => {
-    callbacksRef.current = callbacks;
-  });
+    callbacksRef.current = callbacks
+  })
 
-  return callbacksRef;
+  return callbacksRef
 }
