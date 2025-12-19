@@ -15,14 +15,14 @@ function extractCoordinates(geoJSON: GeoJSON.FeatureCollection): Array<[number, 
   geoJSON.features.forEach((feature) => {
     if (!feature.geometry) return
 
-    const processCoordinates = (coordinates: any): void => {
+    const processCoordinates = (coordinates: unknown): void => {
       if (Array.isArray(coordinates)) {
         if (
-          coordinates.length === 2 &&
+          coordinates.length >= 2 &&
           typeof coordinates[0] === 'number' &&
           typeof coordinates[1] === 'number'
         ) {
-          coords.push([coordinates[1], coordinates[0]])
+          coords.push([coordinates[1] as number, coordinates[0] as number])
         } else {
           coordinates.forEach(processCoordinates)
         }

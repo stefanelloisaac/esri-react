@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Save, Trash2, Check } from 'lucide-react'
+import { Save, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { MapColorPicker } from './MapColorPicker'
 import { MapDrawingControlsProps } from '../_types'
